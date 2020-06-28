@@ -4,14 +4,16 @@ using BookingApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BookingApi.Migrations
 {
     [DbContext(typeof(BookingContext))]
-    partial class BookingContextModelSnapshot : ModelSnapshot
+    [Migration("20200628222934_InitialMigration")]
+    partial class InitialMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -101,10 +103,13 @@ namespace BookingApi.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("FlightID")
+                    b.Property<int>("FlightId")
                         .HasColumnType("int");
 
-                    b.Property<int>("PassengerID")
+                    b.Property<int>("PassengeId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("PassengerID")
                         .HasColumnType("int");
 
                     b.Property<string>("Status")
@@ -112,7 +117,7 @@ namespace BookingApi.Migrations
 
                     b.HasKey("ID");
 
-                    b.HasIndex("FlightID");
+                    b.HasIndex("FlightId");
 
                     b.HasIndex("PassengerID");
 
@@ -237,7 +242,7 @@ namespace BookingApi.Migrations
                     b.Property<int>("Cabin")
                         .HasColumnType("int");
 
-                    b.Property<int>("FlightID")
+                    b.Property<int>("FlightId")
                         .HasColumnType("int");
 
                     b.Property<string>("SeatNum")
@@ -245,7 +250,7 @@ namespace BookingApi.Migrations
 
                     b.HasKey("ID");
 
-                    b.HasIndex("FlightID");
+                    b.HasIndex("FlightId");
 
                     b.ToTable("Seat");
                 });
@@ -254,15 +259,13 @@ namespace BookingApi.Migrations
                 {
                     b.HasOne("BookingApi.Models.Flight", "Flight")
                         .WithMany()
-                        .HasForeignKey("FlightID")
+                        .HasForeignKey("FlightId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("BookingApi.Models.Passenger", "Passenger")
                         .WithMany()
-                        .HasForeignKey("PassengerID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("PassengerID");
                 });
 
             modelBuilder.Entity("BookingApi.Models.Departure", b =>
@@ -299,7 +302,7 @@ namespace BookingApi.Migrations
                 {
                     b.HasOne("BookingApi.Models.Flight", "Flight")
                         .WithMany()
-                        .HasForeignKey("FlightID")
+                        .HasForeignKey("FlightId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

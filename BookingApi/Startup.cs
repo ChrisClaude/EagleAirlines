@@ -32,9 +32,6 @@ namespace BookingApi
 
             services.AddDbContext<BookingContext>(opt =>
                 opt.UseSqlServer(Configuration.GetConnectionString("BookingApiConnection")));
-
-            services.AddIdentity<IdentityUser, IdentityRole>(opt => opt.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<BookingContext>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
