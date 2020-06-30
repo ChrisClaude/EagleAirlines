@@ -3,7 +3,7 @@ info:
   version: 0.1
   title: BookingAPI
 servers:
-  - url: 'http://localhost:3000'
+  - url: 'https://localhost:5001'
 paths:
   /user:
     get:
