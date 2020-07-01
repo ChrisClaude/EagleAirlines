@@ -21,11 +21,11 @@ namespace BookingApi.Migrations
                     Latitude = table.Column<string>(maxLength: 100, nullable: false),
                     Longitude = table.Column<string>(maxLength: 100, nullable: false),
                     Altitude = table.Column<string>(maxLength: 100, nullable: false),
-                    Timezone = table.Column<string>(nullable: true),
-                    Dst = table.Column<string>(nullable: true),
+                    Timezone = table.Column<string>(maxLength: 100, nullable: false),
+                    Dst = table.Column<string>(maxLength: 100, nullable: false),
                     Tz = table.Column<string>(maxLength: 100, nullable: false),
-                    StationType = table.Column<string>(nullable: true),
-                    Source = table.Column<string>(nullable: true)
+                    StationType = table.Column<string>(maxLength: 100, nullable: false),
+                    Source = table.Column<string>(maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -125,14 +125,14 @@ namespace BookingApi.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     SeatNum = table.Column<string>(nullable: true),
                     Cabin = table.Column<int>(nullable: false),
-                    FlightId = table.Column<int>(nullable: false)
+                    FlightID = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Seat", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_Seat_Flight_FlightId",
-                        column: x => x.FlightId,
+                        name: "FK_Seat_Flight_FlightID",
+                        column: x => x.FlightID,
                         principalTable: "Flight",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
@@ -147,16 +147,15 @@ namespace BookingApi.Migrations
                     Date = table.Column<DateTime>(nullable: false),
                     Cost = table.Column<decimal>(type: "decimal(18,4)", nullable: false),
                     Status = table.Column<string>(nullable: true),
-                    FlightId = table.Column<int>(nullable: false),
-                    PassengeId = table.Column<int>(nullable: false),
-                    PassengerID = table.Column<int>(nullable: true)
+                    FlightID = table.Column<int>(nullable: false),
+                    PassengerID = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Booking", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_Booking_Flight_FlightId",
-                        column: x => x.FlightId,
+                        name: "FK_Booking_Flight_FlightID",
+                        column: x => x.FlightID,
                         principalTable: "Flight",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
@@ -165,13 +164,13 @@ namespace BookingApi.Migrations
                         column: x => x.PassengerID,
                         principalTable: "Passenger",
                         principalColumn: "ID",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Booking_FlightId",
+                name: "IX_Booking_FlightID",
                 table: "Booking",
-                column: "FlightId");
+                column: "FlightID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Booking_PassengerID",
@@ -201,9 +200,9 @@ namespace BookingApi.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Seat_FlightId",
+                name: "IX_Seat_FlightID",
                 table: "Seat",
-                column: "FlightId");
+                column: "FlightID");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

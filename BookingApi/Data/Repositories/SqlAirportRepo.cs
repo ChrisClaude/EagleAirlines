@@ -1,4 +1,5 @@
 ﻿using BookingApi.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -26,19 +27,19 @@ namespace BookingApi.Data.Repositories
             _context.Airports.Add(airport);
         }
 
-        public IEnumerable<Airport> GetAllAirports()
+        public async Task<ActionResult<IEnumerable<Airport>>> GetAllAirports()
         {
-            return _context.Airports.ToList();
+            return await _context.Airports.ToListAsync();
         }
 
-        public Airport GetAirportById(int id)
+        public async Task<ActionResult<Airport>> GetAirportById(int id)
         {
-            return _context.Airports.FirstOrDefault(p => p.ID == id);
+            return await _context.Airports.FindAsync(id);
         }
 
-        public void UpdateAirport(Airport airport)
+        public void UpdateAirport(int id, Airport airport)
         {
-            // Nothing
+            _context.Entry(airport).State = EntityState.Modified;
         }
 
         public void DeleteAirport(Airport airport)
@@ -51,9 +52,14 @@ namespace BookingApi.Data.Repositories
             _context.Airports.Remove(airport);
         }
 
-        public bool SaveChanges()
+        public async Task<ActionResult<bool>> SaveChanges()
         {
-            return _context.SaveChanges() >= 0;
+            return await _context.SaveChangesAsync() >= 0;
+        }
+
+        public bool AirportExists(int id)
+        {
+            return _context.Airports.Any(e => e.ID == id);
         }
     }
 }

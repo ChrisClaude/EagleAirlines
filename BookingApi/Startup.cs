@@ -1,21 +1,16 @@
 using System;
 using System.Reflection;
 using System.IO;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using BookingApi.Data;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
+using AutoMapper;
+using BookingApi.Data.Repositories;
 
 namespace BookingApi
 {
@@ -35,6 +30,10 @@ namespace BookingApi
 
             services.AddDbContext<BookingContext>(opt =>
                 opt.UseSqlServer(Configuration.GetConnectionString("BookingApiConnection")));
+
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+            services.AddScoped<IAirportRepo, SqlAirportRepo>();
 
             services.AddSwaggerGen(c =>
             {
