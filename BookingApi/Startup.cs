@@ -12,6 +12,7 @@ using Microsoft.OpenApi.Models;
 using AutoMapper;
 using BookingApi.Data.Repositories;
 using Newtonsoft.Json.Serialization;
+using Microsoft.IdentityModel.Tokens;
 
 namespace BookingApi
 {
@@ -28,6 +29,17 @@ namespace BookingApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
+            services.AddAuthentication("Bearer")
+                .AddJwtBearer("Bearer", options => 
+                {
+                    options.Authority = "https://localhost:5001";
+
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateAudience = false
+                    };
+                });
 
             services.AddDbContext<BookingContext>(opt =>
                 opt.UseSqlServer(Configuration.GetConnectionString("BookingApiConnection")));
@@ -88,6 +100,8 @@ namespace BookingApi
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

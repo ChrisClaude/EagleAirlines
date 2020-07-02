@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookingApi", "BookingApi\BookingApi.csproj", "{46A593CD-8CC6-4842-B0E1-2A7F04CF3D18}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityServer", "IdentityServer\IdentityServer.csproj", "{2641EB89-F676-49E7-9C26-EC720F8DED3D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,17 @@ Global
 		{46A593CD-8CC6-4842-B0E1-2A7F04CF3D18}.Release|x64.Build.0 = Release|Any CPU
 		{46A593CD-8CC6-4842-B0E1-2A7F04CF3D18}.Release|x86.ActiveCfg = Release|Any CPU
 		{46A593CD-8CC6-4842-B0E1-2A7F04CF3D18}.Release|x86.Build.0 = Release|Any CPU
+		{2641EB89-F676-49E7-9C26-EC720F8DED3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2641EB89-F676-49E7-9C26-EC720F8DED3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2641EB89-F676-49E7-9C26-EC720F8DED3D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{2641EB89-F676-49E7-9C26-EC720F8DED3D}.Debug|x64.Build.0 = Debug|Any CPU
+		{2641EB89-F676-49E7-9C26-EC720F8DED3D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2641EB89-F676-49E7-9C26-EC720F8DED3D}.Debug|x86.Build.0 = Debug|Any CPU
+		{2641EB89-F676-49E7-9C26-EC720F8DED3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2641EB89-F676-49E7-9C26-EC720F8DED3D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2641EB89-F676-49E7-9C26-EC720F8DED3D}.Release|x64.ActiveCfg = Release|Any CPU
+		{2641EB89-F676-49E7-9C26-EC720F8DED3D}.Release|x64.Build.0 = Release|Any CPU
+		{2641EB89-F676-49E7-9C26-EC720F8DED3D}.Release|x86.ActiveCfg = Release|Any CPU
+		{2641EB89-F676-49E7-9C26-EC720F8DED3D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

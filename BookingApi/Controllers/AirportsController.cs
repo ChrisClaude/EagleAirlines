@@ -12,11 +12,13 @@ using BookingApi.Data.Repositories;
 using AutoMapper;
 using BookingApi.Dtos;
 using BookingApi.Dtos.Airport;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BookingApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class AirportsController : ControllerBase
     {
         private readonly IAirportRepo _repository;

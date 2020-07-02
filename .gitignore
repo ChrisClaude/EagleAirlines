@@ -1,6 +1,6 @@
 
-# Created by https://www.toptal.com/developers/gitignore/api/visualstudio,aspnetcore,dotnetcore
-# Edit at https://www.toptal.com/developers/gitignore?templates=visualstudio,aspnetcore,dotnetcore
+###  IdentityServer4  ###
+*.rsa
 
 ### ASPNETCore ###
 ## Ignore Visual Studio temporary files, build results, and
