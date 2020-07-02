@@ -11,6 +11,7 @@ using BookingApi.Data;
 using Microsoft.OpenApi.Models;
 using AutoMapper;
 using BookingApi.Data.Repositories;
+using Newtonsoft.Json.Serialization;
 
 namespace BookingApi
 {
@@ -30,6 +31,10 @@ namespace BookingApi
 
             services.AddDbContext<BookingContext>(opt =>
                 opt.UseSqlServer(Configuration.GetConnectionString("BookingApiConnection")));
+
+            services.AddControllers().AddNewtonsoftJson(s => {
+                s.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            });
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 

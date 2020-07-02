@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.JsonPatch;
 using BookingApi.Data;
 using BookingApi.Models;
 using BookingApi.Data.Repositories;
@@ -79,6 +80,34 @@ namespace BookingApi.Controllers
 
             return NoContent();
         }
+
+        // PATCH api/commands/{id}
+        [HttpPatch("{id}")]
+        public async Task<ActionResult> PartialAirportUpdate(int id, JsonPatchDocument<AirportUpdateDto> patchDoc)
+        {
+            var airportModelFromRepo = await _repository.GetAirportById(id);
+            if (airportModelFromRepo == null)
+            {
+                return NotFound();
+            }
+
+            var airportToPatch = _mapper.Map<AirportUpdateDto>(airportModelFromRepo.Value);
+
+            patchDoc.ApplyTo(airportToPatch, ModelState);
+
+            if (!TryValidateModel(airportToPatch))
+            {
+                return ValidationProblem(ModelState);
+            }
+
+            _mapper.Map(airportToPatch, airportModelFromRepo.Value);
+            _repository.UpdateAirport(id, airportModelFromRepo.Value);
+
+            await _repository.SaveChanges();
+
+            return NoContent();
+        }
+
 
         // POST: api/Airports
         [HttpPost]
