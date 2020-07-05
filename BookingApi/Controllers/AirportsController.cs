@@ -18,7 +18,6 @@ namespace BookingApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class AirportsController : ControllerBase
     {
         private readonly IAirportRepo _repository;
@@ -32,17 +31,17 @@ namespace BookingApi.Controllers
 
         // GET: api/Airports
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Airport>>> GetAllAirports()
+        public ActionResult<IEnumerable<Airport>> GetAllAirports()
         {
-            var airports = await _repository.GetAllAirports();
+            var airports = _repository.GetAllAirports();
             return Ok(_mapper.Map<IEnumerable<AirportReadDto>>(airports.Value));
         }
 
         // GET: api/Airports/5
         [HttpGet("{id}", Name = "GetAirport")]
-        public async Task<ActionResult<Airport>> GetAirport(int id)
+        public ActionResult<Airport> GetAirport(int id)
         {
-            var airport = await _repository.GetAirportById(id);
+            var airport = _repository.GetAirportById(id);
 
             if (airport == null)
             {
@@ -54,14 +53,14 @@ namespace BookingApi.Controllers
 
         // PUT: api/Airports/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAirport(int id, AirportUpdateDto airportUpdateDto)
+        public IActionResult UpdateAirport(int id, AirportUpdateDto airportUpdateDto)
         {
             if (id != airportUpdateDto.ID)
             {
                 return BadRequest();
             }
 
-            var airportFromRepo = await _repository.GetAirportById(id);
+            var airportFromRepo = _repository.GetAirportById(id);
 
             if (airportFromRepo == null) 
             {
@@ -73,7 +72,7 @@ namespace BookingApi.Controllers
 
             try
             {
-                await _repository.SaveChanges();
+                _repository.SaveChanges();
             }
             catch (DbUpdateConcurrencyException) when (!_repository.AirportExists(id))
             {
@@ -85,9 +84,9 @@ namespace BookingApi.Controllers
 
         // PATCH api/commands/{id}
         [HttpPatch("{id}")]
-        public async Task<ActionResult> PartialAirportUpdate(int id, JsonPatchDocument<AirportUpdateDto> patchDoc)
+        public ActionResult PartialAirportUpdate(int id, JsonPatchDocument<AirportUpdateDto> patchDoc)
         {
-            var airportModelFromRepo = await _repository.GetAirportById(id);
+            var airportModelFromRepo = _repository.GetAirportById(id);
             if (airportModelFromRepo == null)
             {
                 return NotFound();
@@ -105,7 +104,7 @@ namespace BookingApi.Controllers
             _mapper.Map(airportToPatch, airportModelFromRepo.Value);
             _repository.UpdateAirport(id, airportModelFromRepo.Value);
 
-            await _repository.SaveChanges();
+            _repository.SaveChanges();
 
             return NoContent();
         }
@@ -113,11 +112,11 @@ namespace BookingApi.Controllers
 
         // POST: api/Airports
         [HttpPost]
-        public async Task<ActionResult<Airport>> CreateAirport(AirportCreateDto airportCreateDto)
+        public ActionResult<Airport> CreateAirport(AirportCreateDto airportCreateDto)
         {
             var airportModel = _mapper.Map<Airport>(airportCreateDto);
             _repository.CreateAirport(airportModel);
-            await _repository.SaveChanges();
+            _repository.SaveChanges();
 
             var airportReadDto = _mapper.Map<AirportReadDto>(airportModel);
 
@@ -126,9 +125,9 @@ namespace BookingApi.Controllers
 
         // DELETE: api/Airports/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Airport>> DeleteAirport(int id)
+        public ActionResult<Airport> DeleteAirport(int id)
         {
-            var airport = await _repository.GetAirportById(id);
+            var airport = _repository.GetAirportById(id);
             if (airport.Value == null)
             {
                 return NotFound();
@@ -136,7 +135,7 @@ namespace BookingApi.Controllers
 
             _repository.DeleteAirport(airport.Value);
             
-            await _repository.SaveChanges();
+            _repository.SaveChanges();
 
             return Ok(_mapper.Map<AirportReadDto>(airport.Value));
         }

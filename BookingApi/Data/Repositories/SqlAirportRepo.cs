@@ -27,14 +27,14 @@ namespace BookingApi.Data.Repositories
             _context.Airports.Add(airport);
         }
 
-        public async Task<ActionResult<IEnumerable<Airport>>> GetAllAirports()
+        public ActionResult<IEnumerable<Airport>> GetAllAirports()
         {
-            return await _context.Airports.ToListAsync();
+            return _context.Airports.ToList();
         }
 
-        public async Task<ActionResult<Airport>> GetAirportById(int id)
+        public ActionResult<Airport> GetAirportById(int id)
         {
-            return await _context.Airports.FindAsync(id);
+            return _context.Airports.Find(id);
         }
 
         public void UpdateAirport(int id, Airport airport)
@@ -52,9 +52,9 @@ namespace BookingApi.Data.Repositories
             _context.Airports.Remove(airport);
         }
 
-        public async Task<ActionResult<bool>> SaveChanges()
+        public ActionResult<bool> SaveChanges()
         {
-            return await _context.SaveChangesAsync() >= 0;
+            return _context.SaveChanges() >= 0;
         }
 
         public bool AirportExists(int id)
