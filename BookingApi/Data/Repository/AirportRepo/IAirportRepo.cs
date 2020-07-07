@@ -5,16 +5,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BookingApi.Data.Repositories
+namespace BookingApi.Data.Repository.AirportRepo
 {
     public interface IAirportRepo
     {
-        bool AirportExists(int id);
-        ActionResult<bool> SaveChanges();
-        ActionResult<IEnumerable<Airport>> GetAllAirports();
-        ActionResult<Airport> GetAirportById(int id);
+        IEnumerable<Airport> GetAllAirports();
+        Airport GetAirportById(int id);
         void CreateAirport(Airport airport);
-        void UpdateAirport(int id, Airport airport);
+        void UpdateAirport(Airport airport);
         void DeleteAirport(Airport airport);
+        bool SaveChanges();
     }
 }

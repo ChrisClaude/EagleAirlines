@@ -10,9 +10,9 @@ using Microsoft.EntityFrameworkCore;
 using BookingApi.Data;
 using Microsoft.OpenApi.Models;
 using AutoMapper;
-using BookingApi.Data.Repositories;
 using Newtonsoft.Json.Serialization;
 using Microsoft.IdentityModel.Tokens;
+using BookingApi.Data.Repository.AirportRepo;
 
 namespace BookingApi
 {
@@ -28,7 +28,8 @@ namespace BookingApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers()
+                .AddNewtonsoftJson();
 
             services.AddAuthentication("Bearer")
                 .AddJwtBearer("Bearer", options => 
@@ -50,7 +51,7 @@ namespace BookingApi
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-            services.AddScoped<IAirportRepo, SqlAirportRepo>();
+            services.AddScoped<IAirportRepo, AirportRepo>();
 
             services.AddSwaggerGen(c =>
             {
