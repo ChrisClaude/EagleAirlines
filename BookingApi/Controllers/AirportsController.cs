@@ -8,6 +8,9 @@ using AutoMapper;
 using BookingApi.Dtos;
 using BookingApi.Dtos.Airport;
 using BookingApi.Data.Repository.AirportRepo;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Linq;
 
 namespace BookingApi.Controllers
 {
@@ -17,19 +20,59 @@ namespace BookingApi.Controllers
     {
         private readonly IAirportRepo _repository;
         private readonly IMapper _mapper;
+        private readonly ILogger _logger;
 
-        public AirportsController(IAirportRepo repository, IMapper mapper)
+        public AirportsController(IAirportRepo repository, IMapper mapper, ILogger<AirportsController> logger)
         {
             _repository = repository;
             _mapper = mapper;
+            _logger = logger;
         }
 
-        // GET: api/Airports
+        // GET: api/Airports?sort="coutry_desc"
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<IEnumerable<Airport>> GetAllAirports()
+        public ActionResult<IEnumerable<Airport>> GetAllAirports(string sort)
         {
-            var airports = _repository.GetAllAirports();
+            IEnumerable<Airport> airports;
+
+            if (sort != null)
+            {
+                switch (sort)
+                {
+                    case "name_desc":
+                        _logger.LogInformation(sort);
+                        airports = _repository.GetAllAirports().OrderByDescending(a => a.Name);
+                        break;
+                    case "country":
+                        _logger.LogInformation(sort);
+                        airports = _repository.GetAllAirports().OrderBy(a => a.Country);
+                        break;
+                    case "country_desc":
+                        _logger.LogInformation(sort);
+                        airports = _repository.GetAllAirports().OrderByDescending(a => a.Country);
+                        break;
+                    case "city":
+                        _logger.LogInformation(sort);
+                        airports = _repository.GetAllAirports().OrderBy(a => a.City);
+                        break;
+                    case "city_desc":
+                        _logger.LogInformation(sort);
+                        airports = _repository.GetAllAirports().OrderByDescending(a => a.City);
+                        break;
+                    default:
+                        // this is the fall through case - specifically for name_asc
+                        _logger.LogInformation("Fall through - " + sort);
+                        airports = _repository.GetAllAirports().OrderBy(a => a.Name);
+                        break;
+                }
+            } 
+            else
+            {
+                airports = _repository.GetAllAirports();
+            }
+
+            //var airports = _repository.GetAllAirports();
             return Ok(_mapper.Map<IEnumerable<AirportReadDto>>(airports));
         }
 
