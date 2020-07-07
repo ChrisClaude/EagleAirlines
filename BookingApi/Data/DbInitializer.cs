@@ -36,19 +36,19 @@ namespace BookingApi.Data
 
             foreach (var item in jArray)
             {
-                string name = (String)item["name"];
-                string city = (String)item["city"];
-                string country = (String)item["country"];
-                string iata = (String)item["IATA"];
-                string iciao = (String)item["ICIAO"];
-                string latitude = (String)item["latitude"];
-                string longitude = (String)item["longitude"];
-                string altitude = (String)item["altitude"];
-                string timezone = (String)item["timezone"];
-                string dst = (String)item["dst"];
-                string tz = (String)item["tz"];
-                string stationType = (String)item["station_type"];
-                string source = (String)item["source"];
+                string name = ((string)item["name"]).Trim();
+                string city = ((string)item["city"]).Trim();
+                string country = ((string)item["country"]).Trim();
+                string iata = ((string)item["IATA"]).Trim();
+                string iciao = ((string)item["ICIAO"]).Trim();
+                string latitude = ((string)item["latitude"]).Trim();
+                string longitude = ((string)item["longitude"]).Trim();
+                string altitude = ((string)item["altitude"]).Trim();
+                string timezone = ((string)item["timezone"]).Trim();
+                string dst = ((string)item["dst"]).Trim();
+                string tz = ((string)item["tz"]).Trim();
+                string stationType = ((string)item["station_type"]).Trim();
+                string source = ((string)item["source"]).Trim();
 
                 airports.Add(new Airport
                 {
