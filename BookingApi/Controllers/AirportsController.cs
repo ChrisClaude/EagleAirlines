@@ -29,50 +29,71 @@ namespace BookingApi.Controllers
             _logger = logger;
         }
 
+
         // GET: api/Airports?sort="coutry_desc"
+        /// <summary>
+        /// Get all airports from the database
+        /// </summary>
+        /// <param name="search">search by airport name, country or city. e.g: search=Chicago</param> 
+        /// <param name="sort">sort the returned data by "name", "name_desc", "country", "country_desc", "city", "city_desc". 
+        /// e.g: sort=country would ascendingly sort the returned data by country name.</param>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<IEnumerable<Airport>> GetAllAirports(string sort)
+        public ActionResult<IEnumerable<Airport>> GetAllAirports(string search, string sort)
         {
-            IEnumerable<Airport> airports;
+            IEnumerable<Airport> airports = null;
 
+
+            if (search != null)
+            {
+                _logger.LogInformation(search);
+                airports = _repository.SearchAirports(search);
+            }
+            
             if (sort != null)
             {
+                //TODO Adapt this logic to consider that the preceding parameters are passed
                 switch (sort)
                 {
                     case "name_desc":
                         _logger.LogInformation(sort);
-                        airports = _repository.GetAllAirports().OrderByDescending(a => a.Name);
+                        airports = airports == null? _repository.GetAllAirports().OrderByDescending(a => a.Name) 
+                            : airports.OrderByDescending(a => a.Name);
                         break;
                     case "country":
                         _logger.LogInformation(sort);
-                        airports = _repository.GetAllAirports().OrderBy(a => a.Country);
+                        airports = airports == null? _repository.GetAllAirports().OrderBy(a => a.Country)
+                            : airports.OrderBy(a => a.Country);
                         break;
                     case "country_desc":
                         _logger.LogInformation(sort);
-                        airports = _repository.GetAllAirports().OrderByDescending(a => a.Country);
+                        airports = airports == null? _repository.GetAllAirports().OrderByDescending(a => a.Country)
+                            : airports.OrderByDescending(a => a.Country);
                         break;
                     case "city":
                         _logger.LogInformation(sort);
-                        airports = _repository.GetAllAirports().OrderBy(a => a.City);
+                        airports = airports == null? _repository.GetAllAirports().OrderBy(a => a.City)
+                            : airports.OrderBy(a => a.City);
                         break;
                     case "city_desc":
                         _logger.LogInformation(sort);
-                        airports = _repository.GetAllAirports().OrderByDescending(a => a.City);
+                        airports = airports == null? _repository.GetAllAirports().OrderByDescending(a => a.City)
+                            : airports.OrderByDescending(a => a.City);
                         break;
                     default:
                         // this is the fall through case - specifically for name_asc
                         _logger.LogInformation("Fall through - " + sort);
-                        airports = _repository.GetAllAirports().OrderBy(a => a.Name);
+                        airports = airports == null? _repository.GetAllAirports().OrderBy(a => a.Name)
+                            : airports.OrderBy(a => a.Name);
                         break;
                 }
-            } 
-            else
+            }
+
+            if (airports == null)
             {
                 airports = _repository.GetAllAirports();
             }
 
-            //var airports = _repository.GetAllAirports();
             return Ok(_mapper.Map<IEnumerable<AirportReadDto>>(airports));
         }
 

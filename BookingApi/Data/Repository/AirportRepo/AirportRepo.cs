@@ -54,5 +54,12 @@ namespace BookingApi.Data.Repository.AirportRepo
         {
             return _context.SaveChanges() >= 0;
         }
+
+        public IEnumerable<Airport> SearchAirports(string searchString)
+        {
+            return _context.Airports.Where(a => a.Name.ToUpper().Contains(searchString.ToUpper())
+                        || a.Country.ToUpper().Contains(searchString.ToUpper())
+                        || a.City.ToUpper().Contains(searchString.ToUpper()));
+        }
     }
 }

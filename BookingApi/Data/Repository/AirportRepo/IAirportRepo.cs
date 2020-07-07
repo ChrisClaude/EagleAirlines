@@ -10,6 +10,7 @@ namespace BookingApi.Data.Repository.AirportRepo
     public interface IAirportRepo
     {
         IEnumerable<Airport> GetAllAirports();
+        IEnumerable<Airport> SearchAirports(string searchString);
         Airport GetAirportById(int id);
         void CreateAirport(Airport airport);
         void UpdateAirport(Airport airport);
