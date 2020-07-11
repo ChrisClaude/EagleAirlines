@@ -1,8 +1,10 @@
-﻿using BookingApi.Models;
+﻿using BookingApi.Data.Util;
+using BookingApi.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace BookingApi.Data.Repository.AirportRepo
 {
@@ -13,26 +15,37 @@ namespace BookingApi.Data.Repository.AirportRepo
             _context = context;
         }
 
-        public BookingContext _context { get; }
+        private BookingContext _context { get; }
 
-        public void CreateAirport(Airport airport)
+        public async Task CreateAsync(Airport airport)
         {
             if (airport == null)
             {
                 throw new ArgumentNullException(nameof(airport));
             }
 
-            _context.Airports.Add(airport);
+            await _context.Airports.AddAsync(airport);
         }
 
-        public IEnumerable<Airport> GetAllAirports()
+
+        public async Task<IEnumerable<Airport>> GetAllAsync()
         {
-            return _context.Airports.ToList();
+            return await _context.Airports.ToListAsync();
         }
 
-        public Airport GetAirportById(int id)
+        public async Task<IEnumerable<Airport>> GetAllAsync(int pageIndex)
         {
-            return _context.Airports.Find(id);
+            IQueryable<Airport> airportIQ = from a in _context.Airports
+                                            select a;
+
+            int pageSize = 50;
+
+            return await PaginatedList<Airport>.CreateAsync(airportIQ, pageIndex, pageSize);
+        }
+
+        public async Task<Airport> GetByIdAsync(int id)
+        {
+            return await _context.Airports.FindAsync(id);
         }
 
         public void UpdateAirport(Airport airport)
@@ -50,16 +63,28 @@ namespace BookingApi.Data.Repository.AirportRepo
             _context.Airports.Remove(airport);
         }
 
-        public bool SaveChanges()
+        public async Task<bool> SaveChangesAsync()
         {
-            return _context.SaveChanges() >= 0;
+            return await _context.SaveChangesAsync() >= 0;
         }
 
-        public IEnumerable<Airport> SearchAirports(string searchString)
+        public async Task<IEnumerable<Airport>> SearchAsync(string searchString, int pageIndex)
         {
-            return _context.Airports.Where(a => a.Name.ToUpper().Contains(searchString.ToUpper())
-                        || a.Country.ToUpper().Contains(searchString.ToUpper())
-                        || a.City.ToUpper().Contains(searchString.ToUpper()));
+            var airportsIQ = _context.Airports.Where(a => a.Name.ToUpper().Contains(searchString.ToUpper())
+                                                || a.Country.ToUpper().Contains(searchString.ToUpper())
+                                                || a.City.ToUpper().Contains(searchString.ToUpper()));
+
+
+            int pageSize = 50;
+            var airports = await PaginatedList<Airport>.CreateAsync(airportsIQ, pageIndex, pageSize); ;
+            return airports;
+        }
+
+        public async Task<IEnumerable<Airport>> Search(string searchString)
+        {
+            return await _context.Airports.Where(a => a.Name.ToUpper().Contains(searchString.ToUpper())
+                                                || a.Country.ToUpper().Contains(searchString.ToUpper())
+                                                || a.City.ToUpper().Contains(searchString.ToUpper())).ToListAsync();
         }
     }
 }

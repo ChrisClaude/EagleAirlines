@@ -11,6 +11,7 @@ using BookingApi.Data.Repository.AirportRepo;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace BookingApi.Controllers
 {
@@ -37,9 +38,10 @@ namespace BookingApi.Controllers
         /// <param name="search">search by airport name, country or city. e.g: search=Chicago</param> 
         /// <param name="sort">sort the returned data by "name", "name_desc", "country", "country_desc", "city", "city_desc". 
         /// e.g: sort=country would ascendingly sort the returned data by country name.</param>
+        /// <param name="pageIndex">this is the page number of the returned data</param>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<IEnumerable<Airport>> GetAllAirports(string search, string sort)
+        public async Task<ActionResult<IEnumerable<Airport>>> GetAllAirports(string search, string sort, int pageIndex = 1)
         {
             IEnumerable<Airport> airports = null;
 
@@ -47,43 +49,52 @@ namespace BookingApi.Controllers
             if (search != null)
             {
                 _logger.LogInformation(search);
-                airports = _repository.SearchAirports(search);
+                // this search is overloaded to paginate data
+                airports = await _repository.Search(search, pageIndex);
+            } 
+            else
+            {
+                // no search we use our paginate GetAll()
+                _logger.LogInformation(pageIndex.ToString());
+                //TODO test paginator, and search how to include page info in the returned json
+                airports = airports == null ? await _repository.GetAllAsync(pageIndex)
+                    : await _repository.GetAllAsync(pageIndex);
             }
-            
+
+
             if (sort != null)
             {
-                //TODO Adapt this logic to consider that the preceding parameters are passed
                 switch (sort)
                 {
                     case "name_desc":
                         _logger.LogInformation(sort);
-                        airports = airports == null? _repository.GetAllAirports().OrderByDescending(a => a.Name) 
+                        airports = airports == null ? (await _repository.GetAllAsync()).OrderByDescending(a => a.Name)
                             : airports.OrderByDescending(a => a.Name);
                         break;
                     case "country":
                         _logger.LogInformation(sort);
-                        airports = airports == null? _repository.GetAllAirports().OrderBy(a => a.Country)
+                        airports = airports == null ? (await _repository.GetAllAsync()).OrderBy(a => a.Country)
                             : airports.OrderBy(a => a.Country);
                         break;
                     case "country_desc":
                         _logger.LogInformation(sort);
-                        airports = airports == null? _repository.GetAllAirports().OrderByDescending(a => a.Country)
+                        airports = airports == null ? (await _repository.GetAllAsync()).OrderByDescending(a => a.Country)
                             : airports.OrderByDescending(a => a.Country);
                         break;
                     case "city":
                         _logger.LogInformation(sort);
-                        airports = airports == null? _repository.GetAllAirports().OrderBy(a => a.City)
+                        airports = airports == null ? (await _repository.GetAllAsync()).OrderBy(a => a.City)
                             : airports.OrderBy(a => a.City);
                         break;
                     case "city_desc":
                         _logger.LogInformation(sort);
-                        airports = airports == null? _repository.GetAllAirports().OrderByDescending(a => a.City)
+                        airports = airports == null ? (await _repository.GetAllAsync()).OrderByDescending(a => a.City)
                             : airports.OrderByDescending(a => a.City);
                         break;
                     default:
                         // this is the fall through case - specifically for name_asc
                         _logger.LogInformation("Fall through - " + sort);
-                        airports = airports == null? _repository.GetAllAirports().OrderBy(a => a.Name)
+                        airports = airports == null ? (await _repository.GetAllAsync()).OrderBy(a => a.Name)
                             : airports.OrderBy(a => a.Name);
                         break;
                 }
@@ -91,7 +102,7 @@ namespace BookingApi.Controllers
 
             if (airports == null)
             {
-                airports = _repository.GetAllAirports();
+                airports = await _repository.GetAllAsync();
             }
 
             return Ok(_mapper.Map<IEnumerable<AirportReadDto>>(airports));
@@ -101,9 +112,9 @@ namespace BookingApi.Controllers
         [HttpGet("{id:int}", Name = "GetAirport")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<Airport> GetAirport(int id)
+        public async Task<ActionResult<Airport>> GetAirportAsync(int id)
         {
-            var airport = _repository.GetAirportById(id);
+            var airport = await _repository.GetByIdAsync(id);
 
             if (airport == null)
             {
@@ -118,16 +129,16 @@ namespace BookingApi.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public IActionResult UpdateAirport(int id, AirportUpdateDto airportUpdateDto)
+        public async Task<IActionResult> UpdateAirportAsync(int id, AirportUpdateDto airportUpdateDto)
         {
             if (id != airportUpdateDto.ID)
             {
                 return BadRequest();
             }
 
-            var airportFromRepo = _repository.GetAirportById(id);
+            var airportFromRepo = await _repository.GetByIdAsync(id);
 
-            if (airportFromRepo == null) 
+            if (airportFromRepo == null)
             {
                 return NotFound();
             }
@@ -137,11 +148,14 @@ namespace BookingApi.Controllers
 
             try
             {
-                _repository.SaveChanges();
+                await _repository.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException) when (_repository.GetAirportById(id) == null)
+            catch (DbUpdateConcurrencyException)
             {
-                return NotFound();
+                if ((await _repository.GetByIdAsync(id)) == null)
+                {
+                    return NotFound();
+                }
             }
 
             return NoContent();
@@ -151,9 +165,9 @@ namespace BookingApi.Controllers
         [HttpPatch("{id:int}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public ActionResult PartialAirportUpdate(int id, JsonPatchDocument<AirportUpdateDto> patchDoc)
+        public async Task<ActionResult> PartialAirportUpdateAsync(int id, JsonPatchDocument<AirportUpdateDto> patchDoc)
         {
-            var airportModelFromRepo = _repository.GetAirportById(id);
+            var airportModelFromRepo = await _repository.GetByIdAsync(id);
             if (airportModelFromRepo == null)
             {
                 return NotFound();
@@ -171,7 +185,7 @@ namespace BookingApi.Controllers
             _mapper.Map(airportToPatch, airportModelFromRepo);
             _repository.UpdateAirport(airportModelFromRepo);
 
-            _repository.SaveChanges();
+            await _repository.SaveChangesAsync();
 
             return NoContent();
         }
@@ -180,37 +194,35 @@ namespace BookingApi.Controllers
         // POST: api/Airports
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public ActionResult<Airport> CreateAirport(AirportCreateDto airportCreateDto)
+        public async Task<ActionResult<Airport>> CreateAirportAsync(AirportCreateDto airportCreateDto)
         {
             var airportModel = _mapper.Map<Airport>(airportCreateDto);
-            _repository.CreateAirport(airportModel);
-            _repository.SaveChanges();
+            await _repository.CreateAsync(airportModel);
+            await _repository.SaveChangesAsync();
 
             var airportReadDto = _mapper.Map<AirportReadDto>(airportModel);
 
-            return CreatedAtRoute(nameof(GetAirport), new { Id = airportReadDto.ID }, airportReadDto);
+            return CreatedAtRoute(nameof(GetAirportAsync), new { Id = airportReadDto.ID }, airportReadDto);
         }
 
         // DELETE: api/Airports/5
         [HttpDelete("{id:int}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<Airport> DeleteAirport(int id)
+        public async Task<ActionResult<Airport>> DeleteAirportAsync(int id)
         {
-            var airport = _repository.GetAirportById(id);
+            var airport = await _repository.GetByIdAsync(id);
             if (airport == null)
             {
                 return NotFound();
             }
 
             _repository.DeleteAirport(airport);
-            
-            _repository.SaveChanges();
+
+            await _repository.SaveChangesAsync();
 
             return Ok(_mapper.Map<AirportReadDto>(airport));
         }
 
-        //TODO: Add search actions for airport controller
-        //TODO: Add Async functionality
     }
 }
