@@ -11,11 +11,13 @@ namespace BookingApi.Data.Util
         public int PageIndex { get; private set; }
         public int TotalPages { get; private set; }
         public int ItemCount { get; }
+        public int PageSize { get; }
 
         private PagedList(IEnumerable<T> items, int itemCount, int pageIndex, int pageSize)
         {
             PageIndex = pageIndex;
             ItemCount = itemCount;
+            PageSize = pageSize;
             TotalPages = (int)Math.Ceiling(itemCount / (double)pageSize);
 
             AddRange(items);
