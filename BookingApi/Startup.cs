@@ -16,6 +16,7 @@ using BookingApi.Data.Repository.AirportRepo;
 using BookingApi.Data.Repository.DepartureRepo;
 using BookingApi.Data.Repository.DestinationRepo;
 using BookingApi.Data.Repository.FlightRepo;
+using BookingApi.Data.Repository.SeatRepo;
 using BookingApi.Models;
 
 namespace BookingApi
@@ -59,6 +60,7 @@ namespace BookingApi
             services.AddScoped<IDepartureRepo, DepartureRepo>();
             services.AddScoped<IDestinationRepo, DestinationRepo>();
             services.AddScoped<IFlightRepo, FlightRepo>();
+            services.AddScoped<ISeatRepo, SeatRepo>();
 
             services.AddSwaggerGen(c =>
             {
