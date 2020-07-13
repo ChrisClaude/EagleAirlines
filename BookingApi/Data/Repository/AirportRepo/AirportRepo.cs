@@ -28,19 +28,45 @@ namespace BookingApi.Data.Repository.AirportRepo
         }
 
 
-        public async Task<IEnumerable<Airport>> GetAllAsync()
+        public async Task<IEnumerable<Airport>> GetAllAsync(QueryStringParameter parameter)
         {
-            return await _context.Airports.ToListAsync();
-        }
+            IQueryable<Airport> airportsIq;
 
-        public async Task<IEnumerable<Airport>> GetAllAsync(int pageIndex)
-        {
-            IQueryable<Airport> airportIQ = from a in _context.Airports
-                                            select a;
+            // search
+            if (!string.IsNullOrEmpty(parameter.SearchString))
+            {
+                var searchString = parameter.SearchString;
+                airportsIq = _context.Airports.Where(a => a.Name.ToUpper().Contains(searchString.ToUpper())
+                                                          || a.Country.ToUpper().Contains(searchString.ToUpper())
+                                                          || a.City.ToUpper().Contains(searchString.ToUpper()));
+            }
+            else
+            {
+                airportsIq = from a in _context.Airports select a;
+            }
 
-            int pageSize = 50;
 
-            return await PaginatedList<Airport>.CreateAsync(airportIQ, pageIndex, pageSize);
+            // sort
+            if (!string.IsNullOrEmpty(parameter.SortString))
+            {
+                var sort = parameter.SortString;
+
+                airportsIq = sort switch
+                {
+                    "name_desc" => airportsIq.OrderByDescending(a => a.Name),
+                    "country" => airportsIq.OrderBy(a => a.Country),
+                    "country_desc" => airportsIq.OrderByDescending(a => a.Country),
+                    "city" => airportsIq.OrderBy(a => a.City),
+                    "city_desc" => airportsIq.OrderByDescending(a => a.City),
+                    _ => airportsIq.OrderBy(a => a.Name)
+                };
+            }
+
+            // page
+            IEnumerable<Airport> airports =
+                await PagedList<Airport>.CreateAsync(airportsIq, parameter.PageNumber, parameter.PageSize);
+
+            return airports;
         }
 
         public async Task<Airport> GetByIdAsync(int id)
@@ -68,23 +94,23 @@ namespace BookingApi.Data.Repository.AirportRepo
             return await _context.SaveChangesAsync() >= 0;
         }
 
-        public async Task<IEnumerable<Airport>> SearchAsync(string searchString, int pageIndex)
-        {
-            var airportsIQ = _context.Airports.Where(a => a.Name.ToUpper().Contains(searchString.ToUpper())
-                                                || a.Country.ToUpper().Contains(searchString.ToUpper())
-                                                || a.City.ToUpper().Contains(searchString.ToUpper()));
+        //public async Task<IEnumerable<Airport>> SearchAsync(string searchString, int pageIndex)
+        //{
+        //    var airportsIQ = _context.Airports.Where(a => a.Name.ToUpper().Contains(searchString.ToUpper())
+        //                                        || a.Country.ToUpper().Contains(searchString.ToUpper())
+        //                                        || a.City.ToUpper().Contains(searchString.ToUpper()));
 
 
-            int pageSize = 50;
-            var airports = await PaginatedList<Airport>.CreateAsync(airportsIQ, pageIndex, pageSize); ;
-            return airports;
-        }
+        //    int pageSize = 50;
+        //    var airports = await PagedList<Airport>.CreateAsync(airportsIQ, pageIndex, pageSize); ;
+        //    return airports;
+        //}
 
-        public async Task<IEnumerable<Airport>> Search(string searchString)
-        {
-            return await _context.Airports.Where(a => a.Name.ToUpper().Contains(searchString.ToUpper())
-                                                || a.Country.ToUpper().Contains(searchString.ToUpper())
-                                                || a.City.ToUpper().Contains(searchString.ToUpper())).ToListAsync();
-        }
+        //public async Task<IEnumerable<Airport>> SearchAsync(string searchString)
+        //{
+        //    return await _context.Airports.Where(a => a.Name.ToUpper().Contains(searchString.ToUpper())
+        //                                        || a.Country.ToUpper().Contains(searchString.ToUpper())
+        //                                        || a.City.ToUpper().Contains(searchString.ToUpper())).ToListAsync();
+        //}
     }
 }

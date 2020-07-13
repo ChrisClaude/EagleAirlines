@@ -6,7 +6,7 @@ namespace BookingApi.Data.Repository.AirportRepo
 {
     public interface IAirportRepo : IDataRepository<Airport>
     {
-        Task<IEnumerable<Airport>> GetAllAsync(int pageIndex);
-        Task<IEnumerable<Airport>> Search(string search, int pageIndex);
+        //Task<IEnumerable<Airport>> GetAllAsync(int pageIndex);
+        //Task<IEnumerable<Airport>> SearchAsync(string search, int pageIndex);
     }
 }

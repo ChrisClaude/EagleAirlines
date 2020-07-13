@@ -12,6 +12,8 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using BookingApi.Data.Util;
+using Newtonsoft.Json;
 
 namespace BookingApi.Controllers
 {
@@ -31,79 +33,39 @@ namespace BookingApi.Controllers
         }
 
 
-        // GET: api/Airports?sort="coutry_desc"
+        // GET: api/Airports?search=France&sort=name?pageIndex=3&pageSize=35
         /// <summary>
         /// Get all airports from the database
         /// </summary>
-        /// <param name="search">search by airport name, country or city. e.g: search=Chicago</param> 
+        /// <param name="search">search by airport name, country or city. e.g: search=Chicago</param>
         /// <param name="sort">sort the returned data by "name", "name_desc", "country", "country_desc", "city", "city_desc". 
-        /// e.g: sort=country would ascendingly sort the returned data by country name.</param>
+        ///     e.g: sort=country would ascendingly sort the returned data by country name.</param>
         /// <param name="pageIndex">this is the page number of the returned data</param>
+        /// <param name="pageSize">this is the number of returned items in the response</param>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<Airport>>> GetAllAirports(string search, string sort, int pageIndex = 1)
-        {
-            IEnumerable<Airport> airports = null;
-
-
-            if (search != null)
+        public async Task<ActionResult<IEnumerable<Airport>>> GetAllAirports(string search, string sort, int pageIndex = 1, int pageSize = 25)
+        {            
+            QueryStringParameter parameter = new AirportParameter();
+            parameter.SearchString = search;
+            parameter.SortString = sort;
+            parameter.PageNumber = pageIndex;
+            parameter.PageSize = pageSize;
+            
+            var airports = await _repository.GetAllAsync(parameter);
+                        
+            var metadata = new 
             {
-                _logger.LogInformation(search);
-                // this search is overloaded to paginate data
-                airports = await _repository.Search(search, pageIndex);
-            } 
-            else
-            {
-                // no search we use our paginate GetAll()
-                _logger.LogInformation(pageIndex.ToString());
-                //TODO test paginator, and search how to include page info in the returned json
-                airports = airports == null ? await _repository.GetAllAsync(pageIndex)
-                    : await _repository.GetAllAsync(pageIndex);
-            }
+                ((PagedList<Airport>) airports).ItemCount,
+                parameter.PageSize,
+                ((PagedList<Airport>) airports).PageIndex,
+                ((PagedList<Airport>) airports).TotalPages,
+                ((PagedList<Airport>) airports).HasNextPage,
+                ((PagedList<Airport>) airports).HasPreviousPage
+            };
 
 
-            if (sort != null)
-            {
-                switch (sort)
-                {
-                    case "name_desc":
-                        _logger.LogInformation(sort);
-                        airports = airports == null ? (await _repository.GetAllAsync()).OrderByDescending(a => a.Name)
-                            : airports.OrderByDescending(a => a.Name);
-                        break;
-                    case "country":
-                        _logger.LogInformation(sort);
-                        airports = airports == null ? (await _repository.GetAllAsync()).OrderBy(a => a.Country)
-                            : airports.OrderBy(a => a.Country);
-                        break;
-                    case "country_desc":
-                        _logger.LogInformation(sort);
-                        airports = airports == null ? (await _repository.GetAllAsync()).OrderByDescending(a => a.Country)
-                            : airports.OrderByDescending(a => a.Country);
-                        break;
-                    case "city":
-                        _logger.LogInformation(sort);
-                        airports = airports == null ? (await _repository.GetAllAsync()).OrderBy(a => a.City)
-                            : airports.OrderBy(a => a.City);
-                        break;
-                    case "city_desc":
-                        _logger.LogInformation(sort);
-                        airports = airports == null ? (await _repository.GetAllAsync()).OrderByDescending(a => a.City)
-                            : airports.OrderByDescending(a => a.City);
-                        break;
-                    default:
-                        // this is the fall through case - specifically for name_asc
-                        _logger.LogInformation("Fall through - " + sort);
-                        airports = airports == null ? (await _repository.GetAllAsync()).OrderBy(a => a.Name)
-                            : airports.OrderBy(a => a.Name);
-                        break;
-                }
-            }
-
-            if (airports == null)
-            {
-                airports = await _repository.GetAllAsync();
-            }
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
 
             return Ok(_mapper.Map<IEnumerable<AirportReadDto>>(airports));
         }
