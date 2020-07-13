@@ -1,8 +1,8 @@
 ﻿using BookingApi.Data.Util;
 
-namespace BookingApi.Data.Repository.DepartureRepo
+namespace BookingApi.Data.Repository.DestinationRepo
 {
-    public class DepartureParameter : QueryStringParameter
+    public class DestinationParameter : QueryStringParameter
     {
         
     }

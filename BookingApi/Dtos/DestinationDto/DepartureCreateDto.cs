@@ -1,10 +1,9 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using BookingApi.Models;
 
-namespace BookingApi.Dtos.DepartureDto
+namespace BookingApi.Dtos.DestinationDto
 {
-    public class DepartureCreateDto
+    public class DestinationCreateDto
     {
         public int ID { get; set; }
 

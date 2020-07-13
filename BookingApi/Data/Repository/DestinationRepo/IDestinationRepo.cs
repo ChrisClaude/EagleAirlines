@@ -6,13 +6,8 @@ using System.Threading.Tasks;
 
 namespace BookingApi.Data.Repository.DestinationRepo
 {
-    interface IDestinationRepo
+    public interface IDestinationRepo : IDataRepository<Destination>
     {
-        IEnumerable<Models.Destination> GetDepartures();
-        Models.Destination GetDeparture(int id);
-        void CreateDeparture(Models.Destination destination);
-        void UpdateDeparture(Models.Destination destination);
-        void DeleteDeparture(Models.Destination destination);
-        bool SavaeChanges();
+        
     }
 }

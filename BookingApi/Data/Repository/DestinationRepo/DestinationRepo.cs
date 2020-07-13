@@ -5,57 +5,91 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BookingApi.Data.Util;
 
 namespace BookingApi.Data.Repository.DestinationRepo
 {
     public class DestinationRepo : IDestinationRepo
     {
-
         public DestinationRepo(BookingContext context)
         {
             _context = context;
         }
 
-        public BookingContext _context { get; }
+        private BookingContext _context { get; }
 
-        public void CreateDeparture(Models.Destination destination)
+        public async Task<IEnumerable<Destination>> GetAllAsync(QueryStringParameter parameter)
         {
-            if (destination == null) 
+            IQueryable<Destination> departuresIq;
+
+            // search
+            if (!string.IsNullOrEmpty(parameter.SearchString))
             {
-                throw new ArgumentNullException(nameof(destination));
+                var searchDate = DateTime.Parse(parameter.SearchString);
+                departuresIq = _context.Destinations.Where(d => d.Date.Equals(searchDate));
+            }
+            else
+            {
+                departuresIq = from d in _context.Destinations select d;
             }
 
-            _context.Destinations.Add(destination);
-        }
 
-        public void DeleteDeparture(Models.Destination destination)
-        {
-            if (destination == null)
+            // sort
+            if (!string.IsNullOrEmpty(parameter.SortString))
             {
-                throw new ArgumentNullException(nameof(destination));
+                var sort = parameter.SortString;
+
+                departuresIq = sort switch
+                {
+                    "date_desc" => departuresIq.OrderByDescending(d => d.Date),
+                    "flight" => departuresIq.OrderBy(d => d.FlightID),
+                    "flight_desc" => departuresIq.OrderBy(d => d.FlightID),
+                    "airport" => departuresIq.OrderByDescending(d => d.AirportID),
+                    "airport_desc" => departuresIq.OrderByDescending(d => d.AirportID),
+                    _ => departuresIq.OrderBy(d => d.Date)
+                };
             }
 
-            _context.Destinations.Remove(destination);
+            // page
+            IEnumerable<Destination> departures =
+                await PagedList<Destination>.CreateAsync(departuresIq, parameter.PageNumber, parameter.PageSize);
+
+            return departures;
         }
 
-        public Models.Destination GetDeparture(int id)
+        public async Task<Destination> GetByIdAsync(int id)
         {
-            return _context.Destinations.Find(id);
+            return await _context.Destinations.FindAsync(id);
         }
 
-        public IEnumerable<Models.Destination> GetDepartures()
+        public async Task CreateAsync(Destination departure)
         {
-            return _context.Destinations.ToList();
+            if (departure == null)
+            {
+                throw new ArgumentNullException(nameof(departure));
+            }
+
+            await _context.Destinations.AddAsync(departure);
         }
 
-        public bool SavaeChanges()
+        public void Update(Destination departure)
         {
-            return _context.SaveChanges() > 0;
+            _context.Entry(departure).State = EntityState.Modified;
         }
 
-        public void UpdateDeparture(Models.Destination destination)
+        public void Delete(Destination departure)
         {
-            _context.Entry(destination).State = EntityState.Modified;
+            if (departure == null)
+            {
+                throw new ArgumentNullException(nameof(departure));
+            }
+
+            _context.Destinations.Remove(departure);
+        }
+
+        public async Task<bool> SaveChangesAsync()
+        {
+            return await _context.SaveChangesAsync() >= 0;
         }
     }
 }
