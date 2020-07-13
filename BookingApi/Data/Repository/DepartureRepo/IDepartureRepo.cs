@@ -6,13 +6,8 @@ using BookingApi.Models;
 
 namespace BookingApi.Data.Repository.DepartureRepo
 {
-    interface IDepartureRepo
+    public interface IDepartureRepo : IDataRepository<Departure>
     {
-        IEnumerable<Departure> GetDepartures();
-        Departure GetDeparture(int id);
-        void CreateDeparture(Departure departure);
-        void UpdateDeparture(Departure departure);
-        void DeleteDeparture(Departure departure);
-        bool SavaeChanges();
+        
     }
 }

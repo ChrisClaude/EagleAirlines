@@ -6,13 +6,13 @@ using Microsoft.AspNetCore.JsonPatch;
 using BookingApi.Models;
 using AutoMapper;
 using BookingApi.Dtos;
-using BookingApi.Dtos.Airport;
 using BookingApi.Data.Repository.AirportRepo;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 using BookingApi.Data.Util;
+using BookingApi.Dtos.AirportDto;
 using Newtonsoft.Json;
 
 namespace BookingApi.Controllers
@@ -23,25 +23,23 @@ namespace BookingApi.Controllers
     {
         private readonly IAirportRepo _repository;
         private readonly IMapper _mapper;
-        private readonly ILogger _logger;
 
-        public AirportsController(IAirportRepo repository, IMapper mapper, ILogger<AirportsController> logger)
+        public AirportsController(IAirportRepo repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;
-            _logger = logger;
         }
-
 
         // GET: api/Airports?search=France&sort=name?pageIndex=3&pageSize=35
         /// <summary>
-        /// Get all airports from the database
+        /// Get all airports from the database. 
         /// </summary>
         /// <param name="search">search by airport name, country or city. e.g: search=Chicago</param>
         /// <param name="sort">sort the returned data by "name", "name_desc", "country", "country_desc", "city", "city_desc". 
-        ///     e.g: sort=country would ascendingly sort the returned data by country name.</param>
+        ///     e.g: sort=country would ascending-ly sort the returned data by country name.</param>
         /// <param name="pageIndex">this is the page number of the returned data</param>
         /// <param name="pageSize">this is the number of returned items in the response</param>
+        /// <returns>An array of airport objects</returns>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<Airport>>> GetAllAirports(string search, string sort, int pageIndex = 1, int pageSize = 25)
@@ -71,6 +69,11 @@ namespace BookingApi.Controllers
         }
 
         // GET: api/Airports/5
+        /// <summary>
+        /// Get an airport by its id
+        /// </summary>
+        /// <param name="id">the id of the airport requested</param>
+        /// <returns>An airport object</returns>
         [HttpGet("{id:int}", Name = "GetAirport")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -87,6 +90,11 @@ namespace BookingApi.Controllers
         }
 
         // PUT: api/Airports/5
+        /// <summary>
+        /// Updates an airport object
+        /// </summary>
+        /// <param name="id">the id of the airport to update</param>
+        /// <param name="airportUpdateDto">the updated object</param>
         [HttpPut("{id:int}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -124,6 +132,11 @@ namespace BookingApi.Controllers
         }
 
         // PATCH api/commands/{id}
+        /// <summary>
+        /// partially updates an airport
+        /// </summary>
+        /// <param name="id">the id of the airport to update</param>
+        /// <param name="patchDoc">the json object with the specific attribute to be updated</param>
         [HttpPatch("{id:int}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -145,15 +158,19 @@ namespace BookingApi.Controllers
             }
 
             _mapper.Map(airportToPatch, airportModelFromRepo);
-            _repository.UpdateAirport(airportModelFromRepo);
+            _repository.Update(airportModelFromRepo);
 
             await _repository.SaveChangesAsync();
 
             return NoContent();
         }
-
-
+        
         // POST: api/Airports
+        /// <summary>
+        /// Creates an airport 
+        /// </summary>
+        /// <param name="airportCreateDto">The airport object to create.</param>
+        /// <returns></returns>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<ActionResult<Airport>> CreateAirportAsync(AirportCreateDto airportCreateDto)
@@ -166,8 +183,13 @@ namespace BookingApi.Controllers
 
             return CreatedAtRoute(nameof(GetAirportAsync), new { Id = airportReadDto.ID }, airportReadDto);
         }
-
+        
         // DELETE: api/Airports/5
+        /// <summary>
+        /// Deletes an airport
+        /// </summary>
+        /// <param name="id">id of the object to be deleted</param>
+        /// <returns>the deleted object</returns>
         [HttpDelete("{id:int}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -179,7 +201,7 @@ namespace BookingApi.Controllers
                 return NotFound();
             }
 
-            _repository.DeleteAirport(airport);
+            _repository.Delete(airport);
 
             await _repository.SaveChangesAsync();
 

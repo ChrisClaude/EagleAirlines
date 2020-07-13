@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using BookingApi.Dtos;
-using BookingApi.Dtos.Airport;
+using BookingApi.Dtos.AirportDto;
 using BookingApi.Models;
 
 namespace BookingApi.Profiles

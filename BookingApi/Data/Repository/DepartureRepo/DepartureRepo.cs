@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BookingApi.Data.Util;
 
 namespace BookingApi.Data.Repository.DepartureRepo
 {
@@ -14,20 +15,70 @@ namespace BookingApi.Data.Repository.DepartureRepo
             _context = context;
         }
 
-        public BookingContext _context { get; }
+        private BookingContext _context { get; }
 
-        public void CreateDeparture(Departure departure)
+        public async Task<IEnumerable<Departure>> GetAllAsync(QueryStringParameter parameter)
+        {
+            IQueryable<Departure> departuresIq;
+
+            // search
+            if (!string.IsNullOrEmpty(parameter.SearchString))
+            {
+                var searchDate = DateTime.Parse(parameter.SearchString);
+                departuresIq = _context.Departures.Where(d => d.Date.Equals(searchDate));
+            }
+            else
+            {
+                departuresIq = from d in _context.Departures select d;
+            }
+
+
+            // sort
+            if (!string.IsNullOrEmpty(parameter.SortString))
+            {
+                var sort = parameter.SortString;
+
+                departuresIq = sort switch
+                {
+                    "date_desc" => departuresIq.OrderByDescending(d => d.Date),
+                    "flight" => departuresIq.OrderBy(d => d.FlightID),
+                    "flight_desc" => departuresIq.OrderBy(d => d.FlightID),
+                    "airport" => departuresIq.OrderByDescending(d => d.AirportID),
+                    "airport_desc" => departuresIq.OrderByDescending(d => d.AirportID),
+                    _ => departuresIq.OrderBy(d => d.Date)
+                };
+            }
+
+            // page
+            IEnumerable<Departure> departures =
+                await PagedList<Departure>.CreateAsync(departuresIq, parameter.PageNumber, parameter.PageSize);
+
+            return departures;
+        }
+
+        public async Task<Departure> GetByIdAsync(int id)
+        {
+            return await _context.Departures.FindAsync(id);
+        }
+
+        public async Task CreateAsync(Departure departure)
         {
             if (departure == null)
             {
                 throw new ArgumentNullException(nameof(departure));
             }
-
-            _context.Departures.Add(departure);
+            
+            await _context.Departures.AddAsync(departure);
         }
 
-        public void DeleteDeparture(Departure departure)
+        public void Update(Departure departure)
         {
+            _context.Entry(departure).State = EntityState.Modified;   
+        }
+
+        public void Delete(Departure departure)
+        {
+            
             if (departure == null)
             {
                 throw new ArgumentNullException(nameof(departure));
@@ -36,24 +87,9 @@ namespace BookingApi.Data.Repository.DepartureRepo
             _context.Departures.Remove(departure);
         }
 
-        public Departure GetDeparture(int id)
+        public async Task<bool> SaveChangesAsync()
         {
-            return _context.Departures.Find(id);
-        }
-
-        public IEnumerable<Departure> GetDepartures()
-        {
-            return _context.Departures.ToList();
-        }
-
-        public bool SavaeChanges()
-        {
-            return _context.SaveChanges() > 0;
-        }
-
-        public void UpdateDeparture(Departure departure)
-        {
-            _context.Entry(departure).State = EntityState.Modified;
+            return await _context.SaveChangesAsync() >= 0;
         }
     }
 }

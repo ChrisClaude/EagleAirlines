@@ -12,8 +12,8 @@ namespace BookingApi.Data.Repository
         //Task<IEnumerable<T>> SearchAsync(string searchString);
         Task<T> GetByIdAsync(int id);
         Task CreateAsync(T t);
-        void UpdateAirport(T t);
-        void DeleteAirport(T t);
+        void Update(T t);
+        void Delete(T t);
         Task<bool> SaveChangesAsync();
     }
 }

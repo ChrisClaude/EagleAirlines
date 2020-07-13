@@ -1,11 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BookingApi.Dtos
+namespace BookingApi.Dtos.AirportDto
 {
-    public class AirportReadDto
+    public class AirportCreateDto
     {
-        public int ID { get; set; }
-
         [Required]
         [StringLength(150, MinimumLength = 4)]
         public string Name { get; set; }
@@ -45,5 +43,17 @@ namespace BookingApi.Dtos
         [Required]
         [StringLength(100, MinimumLength = 1)]
         public string Dst { get; set; }
+
+        [Required]
+        [StringLength(100, MinimumLength = 1)]
+        public string Tz { get; set; }
+
+        [Required]
+        [StringLength(100, MinimumLength = 2)]
+        public string StationType { get; set; }
+
+        [Required]
+        [StringLength(100, MinimumLength = 2)]
+        public string Source { get; set; }
     }
 }

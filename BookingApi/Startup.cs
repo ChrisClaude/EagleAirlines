@@ -13,6 +13,8 @@ using AutoMapper;
 using Newtonsoft.Json.Serialization;
 using Microsoft.IdentityModel.Tokens;
 using BookingApi.Data.Repository.AirportRepo;
+using BookingApi.Data.Repository.DepartureRepo;
+using BookingApi.Models;
 
 namespace BookingApi
 {
@@ -52,6 +54,7 @@ namespace BookingApi
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             services.AddScoped<IAirportRepo, AirportRepo>();
+            services.AddScoped<IDepartureRepo, DepartureRepo>();
 
             services.AddSwaggerGen(c =>
             {
