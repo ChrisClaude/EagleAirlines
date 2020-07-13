@@ -1,17 +1,9 @@
-﻿using Swashbuckle.AspNetCore.SwaggerGen;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BookingApi.Models;
 
-namespace BookingApi.Models
+namespace BookingApi.Dtos.FlightDto
 {
-    public class Flight
+    public class FlightReadDto
     {
-        // TODO: Make ID Guid: in such a way that represents a unique flight code 
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int ID { get; set; }
         public double Miles 
         { 
