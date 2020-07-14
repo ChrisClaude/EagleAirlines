@@ -40,18 +40,18 @@ namespace BookingApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<Flight>>> GetAllFlights(string search, string sort, int pageIndex = 1, int pageSize = 25)
         {            
-            QueryStringParameter parameter = new FlightParameter();
-            parameter.SearchString = search;
-            parameter.SortString = sort;
-            parameter.PageNumber = pageIndex;
-            parameter.PageSize = pageSize;
+            QueryStringParameters parameters = new FlightParameters();
+            parameters.SearchString = search;
+            parameters.SortString = sort;
+            parameters.PageNumber = pageIndex;
+            parameters.PageSize = pageSize;
             
-            var flights = await _repository.GetAllAsync(parameter);
+            var flights = await _repository.GetAllAsync(parameters);
                         
             var metadata = new 
             {
                 ((PagedList<Flight>) flights).ItemCount,
-                parameter.PageSize,
+                parameters.PageSize,
                 ((PagedList<Flight>) flights).PageIndex,
                 ((PagedList<Flight>) flights).TotalPages,
                 ((PagedList<Flight>) flights).HasNextPage,
@@ -70,7 +70,7 @@ namespace BookingApi.Controllers
         /// </summary>
         /// <param name="id">the id of the flight requested</param>
         /// <returns>An flight object</returns>
-        [HttpGet("{id:int}", Name = "GetFlight")]
+        [HttpGet("{id:int}", Name = "GetFlightAsync")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Flight>> GetFlightAsync(int id)

@@ -40,13 +40,13 @@ namespace BookingApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<Destination>>> GetAllDestinations(string search, string sort, int pageIndex = 1, int pageSize = 25)
         {            
-            QueryStringParameter parameter = new DestinationParameter();
-            parameter.SearchString = search;
-            parameter.SortString = sort;
-            parameter.PageNumber = pageIndex;
-            parameter.PageSize = pageSize;
+            QueryStringParameters parameters = new DestinationParameters();
+            parameters.SearchString = search;
+            parameters.SortString = sort;
+            parameters.PageNumber = pageIndex;
+            parameters.PageSize = pageSize;
             
-            var destinations = await _repository.GetAllAsync(parameter);
+            var destinations = await _repository.GetAllAsync(parameters);
                         
             var metadata = new 
             {
@@ -70,7 +70,7 @@ namespace BookingApi.Controllers
         /// </summary>
         /// <param name="id">the id of the destination requested</param>
         /// <returns>An destination object</returns>
-        [HttpGet("{id:int}", Name = "GetDestination")]
+        [HttpGet("{id:int}", Name = "GetDestinationAsync")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Destination>> GetDestinationAsync(int id)

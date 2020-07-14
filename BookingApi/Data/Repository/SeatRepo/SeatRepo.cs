@@ -17,14 +17,14 @@ namespace BookingApi.Data.Repository.SeatRepo
 
         private BookingContext _context { get; }
         
-        public async Task<IEnumerable<Seat>> GetAllAsync(QueryStringParameter parameter)
+        public async Task<IEnumerable<Seat>> GetAllAsync(QueryStringParameters parameters)
         {
             IQueryable<Seat> seatsIq;
 
             // search
-            if (!string.IsNullOrEmpty(parameter.SearchString))
+            if (!string.IsNullOrEmpty(parameters.SearchString))
             {
-                var search = parameter.SearchString;
+                var search = parameters.SearchString;
                 seatsIq = _context.Seats.Where(s => s.SeatNum.ToUpper().Contains(search.ToUpper()));
             }
             else
@@ -33,9 +33,9 @@ namespace BookingApi.Data.Repository.SeatRepo
             }
 
             // sort
-            if (!string.IsNullOrEmpty(parameter.SortString))
+            if (!string.IsNullOrEmpty(parameters.SortString))
             {
-                var sort = parameter.SortString;
+                var sort = parameters.SortString;
 
                 seatsIq = sort switch
                 {
@@ -48,7 +48,7 @@ namespace BookingApi.Data.Repository.SeatRepo
 
             // page
             IEnumerable<Seat> flights =
-                await PagedList<Seat>.CreateAsync(seatsIq, parameter.PageNumber, parameter.PageSize);
+                await PagedList<Seat>.CreateAsync(seatsIq, parameters.PageNumber, parameters.PageSize);
 
             return flights;
         }

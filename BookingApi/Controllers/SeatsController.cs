@@ -40,13 +40,13 @@ namespace BookingApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<Seat>>> GetAllSeats(string search, string sort, int pageIndex = 1, int pageSize = 25)
         {            
-            QueryStringParameter parameter = new SeatParameter();
-            parameter.SearchString = search;
-            parameter.SortString = sort;
-            parameter.PageNumber = pageIndex;
-            parameter.PageSize = pageSize;
+            QueryStringParameters parameters = new SeatParameters();
+            parameters.SearchString = search;
+            parameters.SortString = sort;
+            parameters.PageNumber = pageIndex;
+            parameters.PageSize = pageSize;
             
-            var seats = await _repository.GetAllAsync(parameter);
+            var seats = await _repository.GetAllAsync(parameters);
                         
             var metadata = new 
             {

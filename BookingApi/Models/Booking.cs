@@ -9,6 +9,7 @@ namespace BookingApi.Models
 {
     public class Booking
     {
+        // TODO: this ID will have to be changed to accomodate a booking ID like --> RESERVATION CODE BXJHFT 
         public int ID { get; set; }
 
         [DataType(DataType.Date)]

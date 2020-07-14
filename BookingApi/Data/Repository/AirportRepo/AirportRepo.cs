@@ -17,14 +17,14 @@ namespace BookingApi.Data.Repository.AirportRepo
 
         private BookingContext _context { get; }
 
-        public async Task<IEnumerable<Airport>> GetAllAsync(QueryStringParameter parameter)
+        public async Task<IEnumerable<Airport>> GetAllAsync(QueryStringParameters parameters)
         {
             IQueryable<Airport> airportsIq;
 
             // search
-            if (!string.IsNullOrEmpty(parameter.SearchString))
+            if (!string.IsNullOrEmpty(parameters.SearchString))
             {
-                var searchString = parameter.SearchString;
+                var searchString = parameters.SearchString;
                 airportsIq = _context.Airports.Where(a => a.Name.ToUpper().Contains(searchString.ToUpper())
                                                           || a.Country.ToUpper().Contains(searchString.ToUpper())
                                                           || a.City.ToUpper().Contains(searchString.ToUpper()));
@@ -36,9 +36,9 @@ namespace BookingApi.Data.Repository.AirportRepo
 
 
             // sort
-            if (!string.IsNullOrEmpty(parameter.SortString))
+            if (!string.IsNullOrEmpty(parameters.SortString))
             {
-                var sort = parameter.SortString;
+                var sort = parameters.SortString;
 
                 airportsIq = sort switch
                 {
@@ -53,7 +53,7 @@ namespace BookingApi.Data.Repository.AirportRepo
 
             // page
             IEnumerable<Airport> airports =
-                await PagedList<Airport>.CreateAsync(airportsIq, parameter.PageNumber, parameter.PageSize);
+                await PagedList<Airport>.CreateAsync(airportsIq, parameters.PageNumber, parameters.PageSize);
 
             return airports;
         }

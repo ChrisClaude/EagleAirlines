@@ -10,8 +10,6 @@ namespace BookingApi.Models
 {
     public class Flight
     {
-        // TODO: Make ID Guid: in such a way that represents a unique flight code 
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int ID { get; set; }
         public double Miles 
         { 

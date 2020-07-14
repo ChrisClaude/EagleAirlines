@@ -40,18 +40,18 @@ namespace BookingApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<Departure>>> GetAllDepartures(string search, string sort, int pageIndex = 1, int pageSize = 25)
         {            
-            QueryStringParameter parameter = new DepartureParameter();
-            parameter.SearchString = search;
-            parameter.SortString = sort;
-            parameter.PageNumber = pageIndex;
-            parameter.PageSize = pageSize;
+            QueryStringParameters parameters = new DepartureParameters();
+            parameters.SearchString = search;
+            parameters.SortString = sort;
+            parameters.PageNumber = pageIndex;
+            parameters.PageSize = pageSize;
             
-            var departures = await _repository.GetAllAsync(parameter);
+            var departures = await _repository.GetAllAsync(parameters);
                         
             var metadata = new 
             {
                 ((PagedList<Departure>) departures).ItemCount,
-                parameter.PageSize,
+                parameters.PageSize,
                 ((PagedList<Departure>) departures).PageIndex,
                 ((PagedList<Departure>) departures).TotalPages,
                 ((PagedList<Departure>) departures).HasNextPage,
@@ -70,7 +70,7 @@ namespace BookingApi.Controllers
         /// </summary>
         /// <param name="id">the id of the departure requested</param>
         /// <returns>An departure object</returns>
-        [HttpGet("{id:int}", Name = "GetDeparture")]
+        [HttpGet("{id:int}", Name = "GetDepartureAsync")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Departure>> GetDepartureAsync(int id)

@@ -17,14 +17,14 @@ namespace BookingApi.Data.Repository.FlightRepo
 
         private BookingContext _context { get; }
 
-        public async Task<IEnumerable<Flight>> GetAllAsync(QueryStringParameter parameter)
+        public async Task<IEnumerable<Flight>> GetAllAsync(QueryStringParameters parameters)
         {
             IQueryable<Flight> flightsIq;
 
             // search
-            if (!string.IsNullOrEmpty(parameter.SearchString))
+            if (!string.IsNullOrEmpty(parameters.SearchString))
             {
-                var search = parameter.SearchString;
+                var search = parameters.SearchString;
                 flightsIq = _context.Flights.Where(f => f.Name.ToUpper().Contains(search.ToUpper())
                                                         || f.Description.ToUpper().Contains(search.ToUpper()));
             }
@@ -35,9 +35,9 @@ namespace BookingApi.Data.Repository.FlightRepo
 
 
             // sort
-            if (!string.IsNullOrEmpty(parameter.SortString))
+            if (!string.IsNullOrEmpty(parameters.SortString))
             {
-                var sort = parameter.SortString;
+                var sort = parameters.SortString;
 
                 flightsIq = sort switch
                 {
@@ -48,7 +48,7 @@ namespace BookingApi.Data.Repository.FlightRepo
 
             // page
             IEnumerable<Flight> flights =
-                await PagedList<Flight>.CreateAsync(flightsIq, parameter.PageNumber, parameter.PageSize);
+                await PagedList<Flight>.CreateAsync(flightsIq, parameters.PageNumber, parameters.PageSize);
 
             return flights;
         }

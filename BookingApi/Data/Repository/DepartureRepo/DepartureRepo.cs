@@ -17,14 +17,14 @@ namespace BookingApi.Data.Repository.DepartureRepo
 
         private BookingContext _context { get; }
 
-        public async Task<IEnumerable<Departure>> GetAllAsync(QueryStringParameter parameter)
+        public async Task<IEnumerable<Departure>> GetAllAsync(QueryStringParameters parameters)
         {
             IQueryable<Departure> departuresIq;
 
             // search
-            if (!string.IsNullOrEmpty(parameter.SearchString))
+            if (!string.IsNullOrEmpty(parameters.SearchString))
             {
-                var searchDate = DateTime.Parse(parameter.SearchString);
+                var searchDate = DateTime.Parse(parameters.SearchString);
                 departuresIq = _context.Departures.Where(d => d.Date.Equals(searchDate));
             }
             else
@@ -34,9 +34,9 @@ namespace BookingApi.Data.Repository.DepartureRepo
 
 
             // sort
-            if (!string.IsNullOrEmpty(parameter.SortString))
+            if (!string.IsNullOrEmpty(parameters.SortString))
             {
-                var sort = parameter.SortString;
+                var sort = parameters.SortString;
 
                 departuresIq = sort switch
                 {
@@ -51,7 +51,7 @@ namespace BookingApi.Data.Repository.DepartureRepo
 
             // page
             IEnumerable<Departure> departures =
-                await PagedList<Departure>.CreateAsync(departuresIq, parameter.PageNumber, parameter.PageSize);
+                await PagedList<Departure>.CreateAsync(departuresIq, parameters.PageNumber, parameters.PageSize);
 
             return departures;
         }

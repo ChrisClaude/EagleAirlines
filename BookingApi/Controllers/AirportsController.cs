@@ -44,18 +44,18 @@ namespace BookingApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<Airport>>> GetAllAirports(string search, string sort, int pageIndex = 1, int pageSize = 25)
         {            
-            QueryStringParameter parameter = new AirportParameter();
-            parameter.SearchString = search;
-            parameter.SortString = sort;
-            parameter.PageNumber = pageIndex;
-            parameter.PageSize = pageSize;
+            QueryStringParameters parameters = new AirportParameters();
+            parameters.SearchString = search;
+            parameters.SortString = sort;
+            parameters.PageNumber = pageIndex;
+            parameters.PageSize = pageSize;
             
-            var airports = await _repository.GetAllAsync(parameter);
+            var airports = await _repository.GetAllAsync(parameters);
                         
             var metadata = new 
             {
                 ((PagedList<Airport>) airports).ItemCount,
-                parameter.PageSize,
+                parameters.PageSize,
                 ((PagedList<Airport>) airports).PageIndex,
                 ((PagedList<Airport>) airports).TotalPages,
                 ((PagedList<Airport>) airports).HasNextPage,

@@ -182,7 +182,9 @@ namespace BookingApi.Migrations
             modelBuilder.Entity("BookingApi.Models.Flight", b =>
                 {
                     b.Property<int>("ID")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");

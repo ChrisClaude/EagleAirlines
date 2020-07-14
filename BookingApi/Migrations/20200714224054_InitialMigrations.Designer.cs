@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookingApi.Migrations
 {
     [DbContext(typeof(BookingContext))]
-    [Migration("20200630232902_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20200714224054_InitialMigrations")]
+    partial class InitialMigrations
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -184,7 +184,9 @@ namespace BookingApi.Migrations
             modelBuilder.Entity("BookingApi.Models.Flight", b =>
                 {
                     b.Property<int>("ID")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");

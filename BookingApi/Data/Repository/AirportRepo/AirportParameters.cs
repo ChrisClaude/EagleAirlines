@@ -6,7 +6,7 @@ using BookingApi.Data.Util;
 
 namespace BookingApi.Data.Repository.AirportRepo
 {
-    public class AirportParameter : QueryStringParameter
+    public class AirportParameters : QueryStringParameters
     {
     }
 }

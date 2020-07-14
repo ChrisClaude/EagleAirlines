@@ -1,6 +1,6 @@
 ﻿namespace BookingApi.Data.Util
 {
-    public abstract class QueryStringParameter
+    public abstract class QueryStringParameters
     {
         private const int MaxPageSize = 75;
         public int PageNumber { get; set; } = 1;
