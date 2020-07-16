@@ -50,12 +50,12 @@ namespace BookingApi.Controllers
                         
             var metadata = new 
             {
-                ((PagedList<Flight>) flights).ItemCount,
+                ((PaginatedList<Flight>) flights).ItemCount,
                 parameters.PageSize,
-                ((PagedList<Flight>) flights).PageIndex,
-                ((PagedList<Flight>) flights).TotalPages,
-                ((PagedList<Flight>) flights).HasNextPage,
-                ((PagedList<Flight>) flights).HasPreviousPage
+                ((PaginatedList<Flight>) flights).PageIndex,
+                ((PaginatedList<Flight>) flights).TotalPages,
+                ((PaginatedList<Flight>) flights).HasNextPage,
+                ((PaginatedList<Flight>) flights).HasPreviousPage
             };
 
 

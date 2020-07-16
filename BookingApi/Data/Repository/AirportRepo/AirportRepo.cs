@@ -36,7 +36,7 @@ namespace BookingApi.Data.Repository.AirportRepo
 
             // page
             IEnumerable<Airport> airports =
-                await PagedList<Airport>.CreateAsync(airportsIq, parameters.PageNumber, parameters.PageSize);
+                await PaginatedList<Airport>.CreateAsync(airportsIq, parameters.PageNumber, parameters.PageSize);
             
             // sort string not set
             if (string.IsNullOrEmpty(parameters.SortString)) return airports;
@@ -44,9 +44,9 @@ namespace BookingApi.Data.Repository.AirportRepo
             // sort
             var sort = parameters.SortString;
             
-            var count = ((PagedList<Airport>) airports).ItemCount;
-            var index = ((PagedList<Airport>) airports).PageIndex;
-            var size = ((PagedList<Airport>) airports).PageSize;
+            var count = ((PaginatedList<Airport>) airports).ItemCount;
+            var index = ((PaginatedList<Airport>) airports).PageIndex;
+            var size = ((PaginatedList<Airport>) airports).PageSize;
 
             airports = sort switch
             {
@@ -58,7 +58,7 @@ namespace BookingApi.Data.Repository.AirportRepo
                 _ => airports.OrderBy(a => a.Name)
             };
 
-            return PagedList<Airport>.ParsePagedList(airports, count, index, size);
+            return PaginatedList<Airport>.ParsePaginatedList(airports, count, index, size);
         }
 
         public async Task<Airport> GetByIdAsync(int id)

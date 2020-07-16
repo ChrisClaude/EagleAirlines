@@ -49,7 +49,7 @@ namespace BookingApi.Data.Repository.FlightRepo
 
             // page
             IEnumerable<Flight> flights =
-                await PagedList<Flight>.CreateAsync(flightsIq, parameters.PageNumber, parameters.PageSize);
+                await PaginatedList<Flight>.CreateAsync(flightsIq, parameters.PageNumber, parameters.PageSize);
 
             return flights;
         }

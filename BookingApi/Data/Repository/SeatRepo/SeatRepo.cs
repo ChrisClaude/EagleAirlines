@@ -48,7 +48,7 @@ namespace BookingApi.Data.Repository.SeatRepo
 
             // page
             IEnumerable<Seat> flights =
-                await PagedList<Seat>.CreateAsync(seatsIq, parameters.PageNumber, parameters.PageSize);
+                await PaginatedList<Seat>.CreateAsync(seatsIq, parameters.PageNumber, parameters.PageSize);
 
             return flights;
         }

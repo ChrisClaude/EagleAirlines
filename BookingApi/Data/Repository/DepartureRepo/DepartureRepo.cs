@@ -51,7 +51,7 @@ namespace BookingApi.Data.Repository.DepartureRepo
 
             // page
             IEnumerable<Departure> departures =
-                await PagedList<Departure>.CreateAsync(departuresIq, parameters.PageNumber, parameters.PageSize);
+                await PaginatedList<Departure>.CreateAsync(departuresIq, parameters.PageNumber, parameters.PageSize);
 
             return departures;
         }

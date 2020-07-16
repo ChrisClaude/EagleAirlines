@@ -47,12 +47,12 @@ namespace BookingApi.Controllers
                         
             var metadata = new 
             {
-                ((PagedList<Airport>) airports).ItemCount,
-                ((PagedList<Airport>) airports).PageSize,
-                ((PagedList<Airport>) airports).PageIndex,
-                ((PagedList<Airport>) airports).TotalPages,
-                ((PagedList<Airport>) airports).HasNextPage,
-                ((PagedList<Airport>) airports).HasPreviousPage
+                ((PaginatedList<Airport>) airports).ItemCount,
+                ((PaginatedList<Airport>) airports).PageSize,
+                ((PaginatedList<Airport>) airports).PageIndex,
+                ((PaginatedList<Airport>) airports).TotalPages,
+                ((PaginatedList<Airport>) airports).HasNextPage,
+                ((PaginatedList<Airport>) airports).HasPreviousPage
             };
 
             Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));

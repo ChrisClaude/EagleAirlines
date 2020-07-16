@@ -52,7 +52,7 @@ namespace BookingApi.Data.Repository.DestinationRepo
 
             // page
             IEnumerable<Destination> departures =
-                await PagedList<Destination>.CreateAsync(departuresIq, parameters.PageNumber, parameters.PageSize);
+                await PaginatedList<Destination>.CreateAsync(departuresIq, parameters.PageNumber, parameters.PageSize);
 
             return departures;
         }
