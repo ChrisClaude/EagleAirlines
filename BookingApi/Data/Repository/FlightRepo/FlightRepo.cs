@@ -35,6 +35,7 @@ namespace BookingApi.Data.Repository.FlightRepo
 
 
             // sort
+            // TODO: this sort is inefficient because is adds unto a big query which is inefficient
             if (!string.IsNullOrEmpty(parameters.SortString))
             {
                 var sort = parameters.SortString;
@@ -55,7 +56,13 @@ namespace BookingApi.Data.Repository.FlightRepo
 
         public async Task<Flight> GetByIdAsync(int id)
         {
-            return await _context.Flights.FindAsync(id);
+            return await _context.Flights
+                .Include(f => f.Departure)
+                .ThenInclude(departure => departure.Airport)
+                .Include((f => f.Destination))
+                .ThenInclude(departure => departure.Airport)
+                .AsNoTracking()
+                .SingleAsync(f => f.ID == id);
         }
 
         public async Task CreateAsync(Flight flight)
@@ -64,7 +71,7 @@ namespace BookingApi.Data.Repository.FlightRepo
             {
                 throw new ArgumentNullException(nameof(flight));
             }
-            
+
             await _context.Flights.AddAsync(flight);
         }
 

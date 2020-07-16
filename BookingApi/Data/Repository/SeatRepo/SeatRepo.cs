@@ -16,7 +16,7 @@ namespace BookingApi.Data.Repository.SeatRepo
         }
 
         private BookingContext _context { get; }
-        
+
         public async Task<IEnumerable<Seat>> GetAllAsync(QueryStringParameters parameters)
         {
             IQueryable<Seat> seatsIq;
@@ -55,7 +55,9 @@ namespace BookingApi.Data.Repository.SeatRepo
 
         public async Task<Seat> GetByIdAsync(int id)
         {
-            return await _context.Seats.FindAsync(id);
+            return await _context.Seats
+                .Include(s => s.Flight)
+                .SingleAsync(s => s.ID == id);
         }
 
         public async Task CreateAsync(Seat seat)
@@ -64,7 +66,7 @@ namespace BookingApi.Data.Repository.SeatRepo
             {
                 throw new ArgumentNullException(nameof(seat));
             }
-            
+
             await _context.Seats.AddAsync(seat);
         }
 
@@ -87,6 +89,5 @@ namespace BookingApi.Data.Repository.SeatRepo
         {
             return await _context.SaveChangesAsync() >= 0;
         }
-
     }
 }
