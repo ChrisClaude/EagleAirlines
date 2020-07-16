@@ -34,34 +34,26 @@ namespace BookingApi.Controllers
         /// <summary>
         /// Get all airports from the database. 
         /// </summary>
-        /// <param name="search">search by airport name, country or city. e.g: search=Chicago</param>
-        /// <param name="sort">sort the returned data by "name", "name_desc", "country", "country_desc", "city", "city_desc". 
-        ///     e.g: sort=country would ascending-ly sort the returned data by country name.</param>
-        /// <param name="pageIndex">this is the page number of the returned data</param>
-        /// <param name="pageSize">this is the number of returned items in the response</param>
+        /// <param name="parameters">this represent the set of query string parameters which in this case are
+        ///    search for searching airports, sort for sorting, pageIndex for page number of the paged data, pageSize to specify
+        ///     the number of returned elements
+        /// </param>
         /// <returns>An array of airport objects</returns>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<Airport>>> GetAllAirports(string search, string sort, int pageIndex = 1, int pageSize = 25)
+        public async Task<ActionResult<IEnumerable<Airport>>> GetAllAirports([FromQuery] AirportParameters parameters)
         {            
-            QueryStringParameters parameters = new AirportParameters();
-            parameters.SearchString = search;
-            parameters.SortString = sort;
-            parameters.PageNumber = pageIndex;
-            parameters.PageSize = pageSize;
-            
             var airports = await _repository.GetAllAsync(parameters);
                         
             var metadata = new 
             {
                 ((PagedList<Airport>) airports).ItemCount,
-                parameters.PageSize,
+                ((PagedList<Airport>) airports).PageSize,
                 ((PagedList<Airport>) airports).PageIndex,
                 ((PagedList<Airport>) airports).TotalPages,
                 ((PagedList<Airport>) airports).HasNextPage,
                 ((PagedList<Airport>) airports).HasPreviousPage
             };
-
 
             Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
 

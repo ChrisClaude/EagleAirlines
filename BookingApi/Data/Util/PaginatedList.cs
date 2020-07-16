@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace BookingApi.Data.Util
@@ -33,6 +34,13 @@ namespace BookingApi.Data.Util
                 (pageIndex - 1) * pageSize)
                 .Take(pageSize).ToListAsync();
 
+            pageSize = items.Count;
+
+            return new PagedList<T>(items, count, pageIndex, pageSize);
+        }
+
+        public static PagedList<T> ParsePagedList(IEnumerable<T> items, int count, int pageIndex, int pageSize)
+        {
             return new PagedList<T>(items, count, pageIndex, pageSize);
         }
 

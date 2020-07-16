@@ -34,28 +34,31 @@ namespace BookingApi.Data.Repository.AirportRepo
                 airportsIq = from a in _context.Airports select a;
             }
 
-
-            // sort
-            if (!string.IsNullOrEmpty(parameters.SortString))
-            {
-                var sort = parameters.SortString;
-
-                airportsIq = sort switch
-                {
-                    "name_desc" => airportsIq.OrderByDescending(a => a.Name),
-                    "country" => airportsIq.OrderBy(a => a.Country),
-                    "country_desc" => airportsIq.OrderByDescending(a => a.Country),
-                    "city" => airportsIq.OrderBy(a => a.City),
-                    "city_desc" => airportsIq.OrderByDescending(a => a.City),
-                    _ => airportsIq.OrderBy(a => a.Name)
-                };
-            }
-
             // page
             IEnumerable<Airport> airports =
                 await PagedList<Airport>.CreateAsync(airportsIq, parameters.PageNumber, parameters.PageSize);
+            
+            // sort string not set
+            if (string.IsNullOrEmpty(parameters.SortString)) return airports;
+            
+            // sort
+            var sort = parameters.SortString;
+            
+            var count = ((PagedList<Airport>) airports).ItemCount;
+            var index = ((PagedList<Airport>) airports).PageIndex;
+            var size = ((PagedList<Airport>) airports).PageSize;
 
-            return airports;
+            airports = sort switch
+            {
+                "name_desc" => airports.OrderByDescending(a => a.Name),
+                "country" => airports.OrderBy(a => a.Country),
+                "country_desc" => airports.OrderByDescending(a => a.Country),
+                "city" => airports.OrderBy(a => a.City),
+                "city_desc" => airports.OrderByDescending(a => a.City),
+                _ => airports.OrderBy(a => a.Name)
+            };
+
+            return PagedList<Airport>.ParsePagedList(airports, count, index, size);
         }
 
         public async Task<Airport> GetByIdAsync(int id)
