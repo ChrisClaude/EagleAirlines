@@ -32,25 +32,30 @@ namespace BookingApi.Data.Repository.SeatRepo
                 seatsIq = from s in _context.Seats select s;
             }
 
-            // sort
-            if (!string.IsNullOrEmpty(parameters.SortString))
-            {
-                var sort = parameters.SortString;
-
-                seatsIq = sort switch
-                {
-                    "seat_desc" => seatsIq.OrderByDescending(s => s.SeatNum),
-                    "cabin" => seatsIq.OrderBy(s => s.Cabin),
-                    "cabin_desc" => seatsIq.OrderByDescending(s => s.Cabin),
-                    _ => seatsIq.OrderBy(s => s.SeatNum)
-                };
-            }
-
             // page
-            IEnumerable<Seat> flights =
+            IEnumerable<Seat> seats =
                 await PaginatedList<Seat>.CreateAsync(seatsIq, parameters.PageNumber, parameters.PageSize);
 
-            return flights;
+
+            // sort - string not set
+            if (string.IsNullOrEmpty(parameters.SortString)) return seats;
+
+            // sort
+            var sort = parameters.SortString;
+
+            var count = ((PaginatedList<Seat>) seats).ItemCount;
+            var index = ((PaginatedList<Seat>) seats).PageIndex;
+            var size = ((PaginatedList<Seat>) seats).PageSize;
+
+            seats = sort switch
+            {
+                "seat_desc" => seats.OrderByDescending(s => s.SeatNum),
+                "cabin" => seats.OrderBy(s => s.Cabin),
+                "cabin_desc" => seats.OrderByDescending(s => s.Cabin),
+                _ => seats.OrderBy(s => s.SeatNum)
+            };
+
+            return PaginatedList<Seat>.ParsePaginatedList(seats, count, index, size);
         }
 
         public async Task<Seat> GetByIdAsync(int id)

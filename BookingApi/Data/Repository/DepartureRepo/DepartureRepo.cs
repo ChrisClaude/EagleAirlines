@@ -32,28 +32,31 @@ namespace BookingApi.Data.Repository.DepartureRepo
                 departuresIq = from d in _context.Departures select d;
             }
 
-
-            // sort
-            if (!string.IsNullOrEmpty(parameters.SortString))
-            {
-                var sort = parameters.SortString;
-
-                departuresIq = sort switch
-                {
-                    "date_desc" => departuresIq.OrderByDescending(d => d.Date),
-                    "flight" => departuresIq.OrderBy(d => d.FlightID),
-                    "flight_desc" => departuresIq.OrderBy(d => d.FlightID),
-                    "airport" => departuresIq.OrderByDescending(d => d.AirportID),
-                    "airport_desc" => departuresIq.OrderByDescending(d => d.AirportID),
-                    _ => departuresIq.OrderBy(d => d.Date)
-                };
-            }
-
             // page
             IEnumerable<Departure> departures =
                 await PaginatedList<Departure>.CreateAsync(departuresIq, parameters.PageNumber, parameters.PageSize);
 
-            return departures;
+            // sort - not set
+            if (string.IsNullOrEmpty(parameters.SortString)) return departures;
+            
+            // sort 
+            var sort = parameters.SortString;
+            
+            var count = ((PaginatedList<Departure>) departures).ItemCount;
+            var index = ((PaginatedList<Departure>) departures).PageIndex;
+            var size = ((PaginatedList<Departure>) departures).PageSize;
+
+            departures = sort switch
+            {
+                "date_desc" => departures.OrderByDescending(d => d.Date),
+                "flight" => departures.OrderBy(d => d.FlightID),
+                "flight_desc" => departures.OrderBy(d => d.FlightID),
+                "airport" => departures.OrderByDescending(d => d.AirportID),
+                "airport_desc" => departures.OrderByDescending(d => d.AirportID),
+                _ => departures.OrderBy(d => d.Date)
+            };
+            
+            return PaginatedList<Departure>.ParsePaginatedList(departures, count, index, size);
         }
 
         public async Task<Departure> GetByIdAsync(int id)

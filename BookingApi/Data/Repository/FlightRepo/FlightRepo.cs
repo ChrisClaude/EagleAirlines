@@ -33,25 +33,28 @@ namespace BookingApi.Data.Repository.FlightRepo
                 flightsIq = from f in _context.Flights select f;
             }
 
-
-            // sort
-            // TODO: this sort is inefficient because is adds unto a big query which is inefficient
-            if (!string.IsNullOrEmpty(parameters.SortString))
-            {
-                var sort = parameters.SortString;
-
-                flightsIq = sort switch
-                {
-                    "name_desc" => flightsIq.OrderByDescending(f => f.Name),
-                    _ => flightsIq.OrderBy(f => f.Name)
-                };
-            }
-
             // page
             IEnumerable<Flight> flights =
                 await PaginatedList<Flight>.CreateAsync(flightsIq, parameters.PageNumber, parameters.PageSize);
 
-            return flights;
+
+            // sort string not set
+            if (string.IsNullOrEmpty(parameters.SortString)) return flights;
+            
+            // sort
+            var sort = parameters.SortString;
+
+            var count = ((PaginatedList<Flight>) flights).ItemCount;
+            var index = ((PaginatedList<Flight>) flights).PageIndex;
+            var size = ((PaginatedList<Flight>) flights).PageSize;
+            
+            flights = sort switch
+            {
+                "name_desc" => flights.OrderByDescending(f => f.Name),
+                _ => flights.OrderBy(f => f.Name)
+            };
+            
+            return PaginatedList<Flight>.ParsePaginatedList(flights, count, index, size);
         }
 
         public async Task<Flight> GetByIdAsync(int id)

@@ -1,6 +1,5 @@
 ﻿using BookingApi.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,41 +19,44 @@ namespace BookingApi.Data.Repository.DestinationRepo
 
         public async Task<IEnumerable<Destination>> GetAllAsync(QueryStringParameters parameters)
         {
-            IQueryable<Destination> departuresIq;
+            IQueryable<Destination> destinationsIq;
 
             // search
             if (!string.IsNullOrEmpty(parameters.SearchString))
             {
                 var searchDate = DateTime.Parse(parameters.SearchString);
-                departuresIq = _context.Destinations.Where(d => d.Date.Equals(searchDate));
+                destinationsIq = _context.Destinations.Where(d => d.Date.Equals(searchDate));
             }
             else
             {
-                departuresIq = from d in _context.Destinations select d;
-            }
-
-
-            // sort
-            if (!string.IsNullOrEmpty(parameters.SortString))
-            {
-                var sort = parameters.SortString;
-
-                departuresIq = sort switch
-                {
-                    "date_desc" => departuresIq.OrderByDescending(d => d.Date),
-                    "flight" => departuresIq.OrderBy(d => d.FlightID),
-                    "flight_desc" => departuresIq.OrderBy(d => d.FlightID),
-                    "airport" => departuresIq.OrderByDescending(d => d.AirportID),
-                    "airport_desc" => departuresIq.OrderByDescending(d => d.AirportID),
-                    _ => departuresIq.OrderBy(d => d.Date)
-                };
+                destinationsIq = from d in _context.Destinations select d;
             }
 
             // page
-            IEnumerable<Destination> departures =
-                await PaginatedList<Destination>.CreateAsync(departuresIq, parameters.PageNumber, parameters.PageSize);
+            IEnumerable<Destination> destinations =
+                await PaginatedList<Destination>.CreateAsync(destinationsIq, parameters.PageNumber, parameters.PageSize);
 
-            return departures;
+            // sort - string not set
+            if (string.IsNullOrEmpty(parameters.SortString)) return destinations;
+            
+            // sort
+            var sort = parameters.SortString;
+
+            var count = ((PaginatedList<Destination>) destinations).ItemCount;
+            var index = ((PaginatedList<Destination>) destinations).PageIndex;
+            var size = ((PaginatedList<Destination>) destinations).PageSize;
+            
+            destinations = sort switch
+            {
+                "date_desc" => destinations.OrderByDescending(d => d.Date),
+                "flight" => destinations.OrderBy(d => d.FlightID),
+                "flight_desc" => destinations.OrderBy(d => d.FlightID),
+                "airport" => destinations.OrderByDescending(d => d.AirportID),
+                "airport_desc" => destinations.OrderByDescending(d => d.AirportID),
+                _ => destinations.OrderBy(d => d.Date)
+            };
+
+            return PaginatedList<Destination>.ParsePaginatedList(destinations, count, index, size);
         }
 
         public async Task<Destination> GetByIdAsync(int id)
@@ -62,29 +64,29 @@ namespace BookingApi.Data.Repository.DestinationRepo
             return await _context.Destinations.FindAsync(id);
         }
 
-        public async Task CreateAsync(Destination departure)
+        public async Task CreateAsync(Destination destination)
         {
-            if (departure == null)
+            if (destination == null)
             {
-                throw new ArgumentNullException(nameof(departure));
+                throw new ArgumentNullException(nameof(destination));
             }
 
-            await _context.Destinations.AddAsync(departure);
+            await _context.Destinations.AddAsync(destination);
         }
 
-        public void Update(Destination departure)
+        public void Update(Destination destination)
         {
-            _context.Entry(departure).State = EntityState.Modified;
+            _context.Entry(destination).State = EntityState.Modified;
         }
 
-        public void Delete(Destination departure)
+        public void Delete(Destination destination)
         {
-            if (departure == null)
+            if (destination == null)
             {
-                throw new ArgumentNullException(nameof(departure));
+                throw new ArgumentNullException(nameof(destination));
             }
 
-            _context.Destinations.Remove(departure);
+            _context.Destinations.Remove(destination);
         }
 
         public async Task<bool> SaveChangesAsync()
