@@ -30,22 +30,12 @@ namespace BookingApi.Controllers
         /// <summary>
         /// Get all flights from the database. 
         /// </summary>
-        /// <param name="search">search by flight name, country or city. e.g: search=Chicago</param>
-        /// <param name="sort">sort the returned data by "name", "name_desc", "country", "country_desc", "city", "city_desc". 
-        ///     e.g: sort=country would ascending-ly sort the returned data by country name.</param>
-        /// <param name="pageIndex">this is the page number of the returned data</param>
-        /// <param name="pageSize">this is the number of returned items in the response</param>
+        /// <param name="parameters">this represents the search, sort, pageIndex, and pageSize query string parameters</param>
         /// <returns>An array of flight objects</returns>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<Flight>>> GetAllFlights(string search, string sort, int pageIndex = 1, int pageSize = 25)
-        {            
-            QueryStringParameters parameters = new FlightParameters();
-            parameters.SearchString = search;
-            parameters.SortString = sort;
-            parameters.PageNumber = pageIndex;
-            parameters.PageSize = pageSize;
-            
+        public async Task<ActionResult<IEnumerable<Flight>>> GetAllFlights([FromQuery] FlightQueryParameters parameters)
+        {
             var flights = await _repository.GetAllAsync(parameters);
                         
             var metadata = new 

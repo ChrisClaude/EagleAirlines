@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using BookingApi.Data.Repository.DepartureRepo;
+using BookingApi.Data.Repository.FlightRepo;
 using BookingApi.Data.Util;
 using BookingApi.Dtos.DepartureDto;
 using BookingApi.Models;
@@ -30,22 +31,12 @@ namespace BookingApi.Controllers
         /// <summary>
         /// Get all departures from the database. 
         /// </summary>
-        /// <param name="search">search by departure name, country or city. e.g: search=Chicago</param>
-        /// <param name="sort">sort the returned data by "name", "name_desc", "country", "country_desc", "city", "city_desc". 
-        ///     e.g: sort=country would ascending-ly sort the returned data by country name.</param>
-        /// <param name="pageIndex">this is the page number of the returned data</param>
-        /// <param name="pageSize">this is the number of returned items in the response</param>
+        /// <param name="parameters">this represents the search, sort, pageIndex, and pageSize query string parameters</param>
         /// <returns>An array of departure objects</returns>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<Departure>>> GetAllDepartures(string search, string sort, int pageIndex = 1, int pageSize = 25)
+        public async Task<ActionResult<IEnumerable<Departure>>> GetAllDepartures([FromQuery] DepartureQueryParameters parameters)
         {            
-            QueryStringParameters parameters = new DepartureParameters();
-            parameters.SearchString = search;
-            parameters.SortString = sort;
-            parameters.PageNumber = pageIndex;
-            parameters.PageSize = pageSize;
-            
             var departures = await _repository.GetAllAsync(parameters);
                         
             var metadata = new 

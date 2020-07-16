@@ -2,7 +2,7 @@
 
 namespace BookingApi.Data.Repository.SeatRepo
 {
-    public class SeatParameters : QueryStringParameters
+    public class SeatQueryParameters : QueryStringParameters
     {
         
     }

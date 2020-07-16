@@ -41,7 +41,7 @@ namespace BookingApi.Controllers
         /// <returns>An array of airport objects</returns>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<Airport>>> GetAllAirports([FromQuery] AirportParameters parameters)
+        public async Task<ActionResult<IEnumerable<Airport>>> GetAllAirports([FromQuery] AirportQueryParameters parameters)
         {            
             var airports = await _repository.GetAllAsync(parameters);
                         

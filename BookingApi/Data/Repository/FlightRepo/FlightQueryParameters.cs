@@ -2,7 +2,7 @@
 
 namespace BookingApi.Data.Repository.FlightRepo
 {
-    public class FlightParameters : QueryStringParameters
+    public class FlightQueryParameters : QueryStringParameters
     {
         
     }
