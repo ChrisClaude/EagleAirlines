@@ -29,23 +29,26 @@ namespace BookingApi.Data.Repository.DestinationRepo
             }
             else
             {
-                destinationsIq = from d in _context.Destinations select d;
+                destinationsIq = from d in _context.Destinations
+                        .Include(des => des.Airport)
+                    select d;
             }
 
             // page
             IEnumerable<Destination> destinations =
-                await PaginatedList<Destination>.CreateAsync(destinationsIq, parameters.PageNumber, parameters.PageSize);
+                await PaginatedList<Destination>.CreateAsync(destinationsIq, parameters.PageNumber,
+                    parameters.PageSize);
 
             // sort - string not set
             if (string.IsNullOrEmpty(parameters.SortString)) return destinations;
-            
+
             // sort
             var sort = parameters.SortString;
 
             var count = ((PaginatedList<Destination>) destinations).ItemCount;
             var index = ((PaginatedList<Destination>) destinations).PageIndex;
             var size = ((PaginatedList<Destination>) destinations).PageSize;
-            
+
             destinations = sort switch
             {
                 "date_desc" => destinations.OrderByDescending(d => d.Date),
@@ -61,7 +64,9 @@ namespace BookingApi.Data.Repository.DestinationRepo
 
         public async Task<Destination> GetByIdAsync(int id)
         {
-            return await _context.Destinations.FindAsync(id);
+            return await _context.Destinations
+                .Include(des => des.Airport)
+                .SingleAsync(des => des.ID == id);
         }
 
         public async Task CreateAsync(Destination destination)

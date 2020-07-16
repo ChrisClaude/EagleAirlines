@@ -14,6 +14,7 @@ namespace BookingApi.Models
         [DataType(DataType.DateTime)]
         public DateTime Date { get; set; }
         public int FlightID { get; set; }
+        [JsonIgnore]
         public int AirportID { get; set; }
 
         [JsonIgnore]

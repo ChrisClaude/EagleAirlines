@@ -30,7 +30,13 @@ namespace BookingApi.Data.Repository.FlightRepo
             }
             else
             {
-                flightsIq = from f in _context.Flights select f;
+                flightsIq = from f in _context.Flights
+                    .Include(f => f.Departure)
+                    .ThenInclude(departure => departure.Airport)
+                    .Include(f => f.Destination)
+                    .ThenInclude(destination => destination.Airport)
+                    .AsNoTracking()
+                    select f;
             }
 
             // page
@@ -63,7 +69,7 @@ namespace BookingApi.Data.Repository.FlightRepo
                 .Include(f => f.Departure)
                 .ThenInclude(departure => departure.Airport)
                 .Include((f => f.Destination))
-                .ThenInclude(departure => departure.Airport)
+                .ThenInclude(destination => destination.Airport)
                 .AsNoTracking()
                 .SingleAsync(f => f.ID == id);
         }

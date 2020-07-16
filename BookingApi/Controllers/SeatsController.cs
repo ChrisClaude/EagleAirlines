@@ -30,11 +30,6 @@ namespace BookingApi.Controllers
         /// <summary>
         /// Get all seats from the database. 
         /// </summary>
-        /// <param name="search">search by flight name, country or city. e.g: search=Chicago</param>
-        /// <param name="sort">sort the returned data by "name", "name_desc", "country", "country_desc", "city", "city_desc". 
-        ///     e.g: sort=country would ascending-ly sort the returned data by country name.</param>
-        /// <param name="pageIndex">this is the page number of the returned data</param>
-        /// <param name="pageSize">this is the number of returned items in the response</param>
         /// <param name="parameters">this represents the search, sort, pageIndex, and pageSize query string parameters</param>
         /// <returns>An array of flight objects</returns>
         [HttpGet]

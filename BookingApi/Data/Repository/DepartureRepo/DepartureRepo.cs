@@ -29,7 +29,9 @@ namespace BookingApi.Data.Repository.DepartureRepo
             }
             else
             {
-                departuresIq = from d in _context.Departures select d;
+                departuresIq = from d in _context.Departures
+                        .Include(dep => dep.Airport)
+                    select d;
             }
 
             // page
@@ -38,10 +40,10 @@ namespace BookingApi.Data.Repository.DepartureRepo
 
             // sort - not set
             if (string.IsNullOrEmpty(parameters.SortString)) return departures;
-            
+
             // sort 
             var sort = parameters.SortString;
-            
+
             var count = ((PaginatedList<Departure>) departures).ItemCount;
             var index = ((PaginatedList<Departure>) departures).PageIndex;
             var size = ((PaginatedList<Departure>) departures).PageSize;
@@ -55,13 +57,15 @@ namespace BookingApi.Data.Repository.DepartureRepo
                 "airport_desc" => departures.OrderByDescending(d => d.AirportID),
                 _ => departures.OrderBy(d => d.Date)
             };
-            
+
             return PaginatedList<Departure>.ParsePaginatedList(departures, count, index, size);
         }
 
         public async Task<Departure> GetByIdAsync(int id)
         {
-            return await _context.Departures.FindAsync(id);
+            return await _context.Departures
+                .Include(dep => dep.Airport)
+                .SingleAsync(dep => dep.ID == id);
         }
 
         public async Task CreateAsync(Departure departure)
@@ -70,18 +74,17 @@ namespace BookingApi.Data.Repository.DepartureRepo
             {
                 throw new ArgumentNullException(nameof(departure));
             }
-            
+
             await _context.Departures.AddAsync(departure);
         }
 
         public void Update(Departure departure)
         {
-            _context.Entry(departure).State = EntityState.Modified;   
+            _context.Entry(departure).State = EntityState.Modified;
         }
 
         public void Delete(Departure departure)
         {
-            
             if (departure == null)
             {
                 throw new ArgumentNullException(nameof(departure));
