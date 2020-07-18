@@ -38,11 +38,12 @@ namespace BookingApi.Controllers
         /// <returns>An array of departure objects</returns>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<Departure>>> GetAllDepartures([FromQuery] DepartureQueryParameters parameters)
-        {            
+        public async Task<ActionResult<IEnumerable<Departure>>> GetAllDepartures(
+            [FromQuery] DepartureQueryParameters parameters)
+        {
             var departures = await _repository.GetAllAsync(parameters);
-                        
-            var metadata = new 
+
+            var metadata = new
             {
                 ((PaginatedList<Departure>) departures).ItemCount,
                 parameters.PageSize,
@@ -130,7 +131,8 @@ namespace BookingApi.Controllers
         [HttpPatch("{id:int}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task<ActionResult> PartialDepartureUpdateAsync(int id, JsonPatchDocument<DepartureUpdateDto> patchDoc)
+        public async Task<ActionResult> PartialDepartureUpdateAsync(int id,
+            JsonPatchDocument<DepartureUpdateDto> patchDoc)
         {
             var departureModelFromRepo = await _repository.GetByIdAsync(id);
             if (departureModelFromRepo == null)
@@ -154,7 +156,7 @@ namespace BookingApi.Controllers
 
             return NoContent();
         }
-        
+
         // POST: api/Departures
         /// <summary>
         /// Creates an departure 
@@ -169,32 +171,24 @@ namespace BookingApi.Controllers
         {
             var departureModel = _mapper.Map<Departure>(departureCreateDto);
 
-            await _repository.CreateAsync(departureModel);
-            
-            try
+            var isFlightIdUnique = await ((DepartureRepo) _repository).IsFlightIdUnique(departureModel.FlightID);
+            if (!isFlightIdUnique)
             {
-                await _repository.SaveChangesAsync();
+                // the flightId isn't unique
+                return BadRequest();
             }
-            catch (DbUpdateException)
-            {
-                var isFlightIdUnique = await ((DepartureRepo) _repository).IsFlightIdUnique(departureModel.FlightID);
-                if (!isFlightIdUnique) 
-                {
-                    // the flightId isn't unique
-                    return BadRequest("Cannot insert duplicate flight id");
-                }
 
-                throw;
-            }
-            
+            await _repository.CreateAsync(departureModel);
+
+            await _repository.SaveChangesAsync();
 
             // here we query the departure that we just created in order to load its navigation property
             departureModel = await _repository.GetByIdAsync(departureModel.ID);
             var departureReadDto = _mapper.Map<DepartureReadDto>(departureModel);
 
-            return CreatedAtRoute(nameof(GetDepartureAsync), new { Id = departureReadDto.ID }, departureReadDto);
+            return CreatedAtRoute(nameof(GetDepartureAsync), new {Id = departureReadDto.ID}, departureReadDto);
         }
-        
+
         // DELETE: api/Departures/5
         /// <summary>
         /// Deletes an departure
@@ -218,6 +212,5 @@ namespace BookingApi.Controllers
 
             return Ok(_mapper.Map<DepartureReadDto>(departure));
         }
-
     }
 }
