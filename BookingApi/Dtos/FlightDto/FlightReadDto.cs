@@ -1,4 +1,6 @@
-﻿using BookingApi.Models;
+﻿using BookingApi.Dtos.DepartureDto;
+using BookingApi.Dtos.DestinationDto;
+using BookingApi.Models;
 
 namespace BookingApi.Dtos.FlightDto
 {
@@ -23,8 +25,8 @@ namespace BookingApi.Dtos.FlightDto
         public string Name { get; set; }
         public string Description { get; set; }
 
-        public Departure Departure { get; set; }
-        public Destination Destination { get; set; }
+        public DepartureReadDto Departure { get; set; }
+        public DestinationReadDto Destination { get; set; }
 
     }
 }

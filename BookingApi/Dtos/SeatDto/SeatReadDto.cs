@@ -1,4 +1,5 @@
-﻿using BookingApi.Models;
+﻿using BookingApi.Dtos.FlightDto;
+using BookingApi.Models;
 
 namespace BookingApi.Dtos.SeatDto
 {
@@ -9,6 +10,6 @@ namespace BookingApi.Dtos.SeatDto
         public Cabin Cabin { get; set; }
         public int FlightID { get; set; }
 
-        public Flight Flight { get; set; }
+        public FlightReadDto Flight { get; set; }
     }
 }

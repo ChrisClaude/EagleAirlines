@@ -45,5 +45,9 @@ namespace BookingApi.Dtos.AirportDto
         [Required]
         [StringLength(100, MinimumLength = 1)]
         public string Dst { get; set; }
+        
+        [Required]
+        [StringLength(100, MinimumLength = 1)]
+        public string Tz { get; set; }
     }
 }
