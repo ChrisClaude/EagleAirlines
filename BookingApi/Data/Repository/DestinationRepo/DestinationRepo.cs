@@ -66,7 +66,7 @@ namespace BookingApi.Data.Repository.DestinationRepo
         {
             return await _context.Destinations
                 .Include(des => des.Airport)
-                .SingleAsync(des => des.ID == id);
+                .SingleOrDefaultAsync(des => des.ID == id);
         }
 
         public async Task CreateAsync(Destination destination)
@@ -94,6 +94,12 @@ namespace BookingApi.Data.Repository.DestinationRepo
             _context.Destinations.Remove(destination);
         }
 
+        public async Task<bool> IsFlightIdUnique(int flightId)
+        {
+            var destination = await _context.Destinations.Where(d => d.FlightID == flightId).SingleOrDefaultAsync();
+            return destination == null;
+        }
+        
         public async Task<bool> SaveChangesAsync()
         {
             return await _context.SaveChangesAsync() >= 0;

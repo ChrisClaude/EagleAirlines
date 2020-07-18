@@ -159,12 +159,32 @@ namespace BookingApi.Controllers
         /// <returns></returns>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [ProducesDefaultResponseType]
         public async Task<ActionResult<Destination>> CreateDestinationAsync(DestinationCreateDto destinationCreateDto)
         {
             var destinationModel = _mapper.Map<Destination>(destinationCreateDto);
             await _repository.CreateAsync(destinationModel);
-            await _repository.SaveChangesAsync();
+            
+            try
+            {
+                await _repository.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                var isFlightIdUnique = await ((DestinationRepo) _repository).IsFlightIdUnique(destinationModel.FlightID);
+                if (!isFlightIdUnique) 
+                {
+                    // the flightId isn't unique
+                    return BadRequest("Cannot insert duplicate flight id");
+                }
 
+                throw;
+            }
+            
+
+            // here we query the departure that we just created in order to load its navigation property
+            destinationModel = await _repository.GetByIdAsync(destinationModel.ID);
             var destinationReadDto = _mapper.Map<DestinationReadDto>(destinationModel);
 
             return CreatedAtRoute(nameof(GetDestinationAsync), new { Id = destinationReadDto.ID }, destinationReadDto);

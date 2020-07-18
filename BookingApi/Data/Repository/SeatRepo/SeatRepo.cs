@@ -62,7 +62,7 @@ namespace BookingApi.Data.Repository.SeatRepo
         {
             return await _context.Seats
                 .Include(s => s.Flight)
-                .SingleAsync(s => s.ID == id);
+                .SingleOrDefaultAsync(s => s.ID == id);
         }
 
         public async Task CreateAsync(Seat seat)

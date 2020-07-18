@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
+using BookingApi.Data.Repository.AirportRepo;
 using BookingApi.Data.Repository.DepartureRepo;
 using BookingApi.Data.Repository.FlightRepo;
 using BookingApi.Data.Util;
@@ -9,6 +11,7 @@ using BookingApi.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
@@ -160,12 +163,33 @@ namespace BookingApi.Controllers
         /// <returns></returns>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesDefaultResponseType]
         public async Task<ActionResult<Departure>> CreateDepartureAsync(DepartureCreateDto departureCreateDto)
         {
             var departureModel = _mapper.Map<Departure>(departureCreateDto);
-            await _repository.CreateAsync(departureModel);
-            await _repository.SaveChangesAsync();
 
+            await _repository.CreateAsync(departureModel);
+            
+            try
+            {
+                await _repository.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                var isFlightIdUnique = await ((DepartureRepo) _repository).IsFlightIdUnique(departureModel.FlightID);
+                if (!isFlightIdUnique) 
+                {
+                    // the flightId isn't unique
+                    return BadRequest("Cannot insert duplicate flight id");
+                }
+
+                throw;
+            }
+            
+
+            // here we query the departure that we just created in order to load its navigation property
+            departureModel = await _repository.GetByIdAsync(departureModel.ID);
             var departureReadDto = _mapper.Map<DepartureReadDto>(departureModel);
 
             return CreatedAtRoute(nameof(GetDepartureAsync), new { Id = departureReadDto.ID }, departureReadDto);
