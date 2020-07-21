@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
-using BookingApi.Data.Repository.AirportRepo;
 using BookingApi.Data.Repository.DepartureRepo;
-using BookingApi.Data.Repository.FlightRepo;
 using BookingApi.Data.Util;
 using BookingApi.Dtos.DepartureDto;
 using BookingApi.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 

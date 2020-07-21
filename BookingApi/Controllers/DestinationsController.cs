@@ -165,7 +165,6 @@ namespace BookingApi.Controllers
         {
             var destinationModel = _mapper.Map<Destination>(destinationCreateDto);
             
-            // TODO: Check for flightId uniqueness here 
             var isFlightIdUnique = await ((DestinationRepo) _repository).IsFlightIdUnique(destinationModel.FlightID);
             if (!isFlightIdUnique) 
             {
