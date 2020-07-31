@@ -40,7 +40,8 @@ namespace BookingApi
                 options.AddPolicy(name: MyAllowSpecificOrigins,
                     builder =>
                     {
-                        builder.WithOrigins("http://localhost:3000", "https://eagleairlines.netlify.app");
+                        builder.WithOrigins("http://localhost:3000", "https://eagleairlines.netlify.app")
+                            .WithExposedHeaders("x-pagination");
                     });
             });
             
