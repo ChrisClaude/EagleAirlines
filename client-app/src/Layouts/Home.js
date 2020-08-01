@@ -54,7 +54,7 @@ const Home = () => {
             })
             .catch(err => console.error(err));
 
-    }, []);
+    }, [rowsPerPage]);
 
 
     const displayAirports = (airports) => {
@@ -72,7 +72,6 @@ const Home = () => {
 
             axios.get(`https://localhost:6001/api/airports?pageIndex=${newPage+1}&pageSize=${rowsPerPage}`)
                 .then(res => {
-                    console.log(newPage);
                     setAirports(res.data);
                     setPaginationInfo(JSON.parse(res.headers["x-pagination"]));
                 })
