@@ -25,6 +25,10 @@ const useStyles = makeStyles((theme) => ({
         display: "flex",
         justifyContent: "center",
         alignItems: "center"
+    },
+
+    tableRoot: {
+        width: "100%"
     }
 }));
 
@@ -43,9 +47,8 @@ const Home = () => {
 
     useEffect(() => {
 
-        axios.get("https://localhost:6001/api/airports")
+        axios.get(`https://localhost:6001/api/airports?pageSize=${rowsPerPage}`)
             .then(res => {
-                console.log(res.headers["x-pagination"]);
                 setAirports(res.data);
                 setPaginationInfo(JSON.parse(res.headers["x-pagination"]));
             })
@@ -61,18 +64,38 @@ const Home = () => {
 
 
         const handleChangePage = (event, newPage) => {
+
+            if (newPage > paginationInfo.TotalPages) {
+                newPage = 0;
+            }
+
+
+            axios.get(`https://localhost:6001/api/airports?pageIndex=${newPage+1}&pageSize=${rowsPerPage}`)
+                .then(res => {
+                    console.log(newPage);
+                    setAirports(res.data);
+                    setPaginationInfo(JSON.parse(res.headers["x-pagination"]));
+                })
+                .catch(err => console.error(err));
+
             setPage(newPage);
         };
 
         const handleChangeRowsPerPage = (event) => {
-            setRowsPerPage(+event.target.value);
+            setRowsPerPage(event.target.value);
+
+            axios.get(`https://localhost:6001/api/airports?pageSize=${event.target.value}`)
+                .then(res => {
+                    setAirports(res.data);
+                    setPaginationInfo(JSON.parse(res.headers["x-pagination"]));
+                })
+                .catch(err => console.error(err));
+
             setPage(0);
         };
 
-        console.log(paginationInfo.ItemCount);
-
         return (
-            <Paper>
+            <Paper className={classes.tableRoot}>
                 <TableContainer>
                     <Table stickyHeader aria-label="sticky table">
                         <TableHead>
@@ -90,7 +113,7 @@ const Home = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {airports.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((airport) => (
+                            {airports.map((airport) => (
                                 <TableRow key={airport.id}>
                                     <TableCell component="th" scope="row">
                                         {airport.id}
@@ -100,10 +123,10 @@ const Home = () => {
                                     <TableCell align="left">{airport.city}</TableCell>
                                     <TableCell align="left">{airport.iata}</TableCell>
                                     <TableCell align="left">{airport.iciao}</TableCell>
-                                    <TableCell align="left">{airport.timezone}</TableCell>
-                                    <TableCell align="left">{airport.latitude}</TableCell>
-                                    <TableCell align="left">{airport.longitude}</TableCell>
-                                    <TableCell align="left">{airport.altitude}</TableCell>
+                                    <TableCell align="left">{airport.timezone > 0? "+" + airport.timezone : airport.timezone}</TableCell>
+                                    <TableCell align="left">{airport.latitude > 0? "+" + airport.latitude : airport.latitude}</TableCell>
+                                    <TableCell align="left">{airport.longitude > 0? "+" + airport.longitude : airport.longitude}</TableCell>
+                                    <TableCell align="left">{airport.altitude > 0? "+" + airport.altitude : airport.altitude}</TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
@@ -112,7 +135,7 @@ const Home = () => {
                 <TablePagination
                     rowsPerPageOptions={[10, 25, 50]}
                     component="div"
-                    count={airports.length}
+                    count={-1}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onChangePage={handleChangePage}
