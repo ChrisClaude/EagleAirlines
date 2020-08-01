@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
 const Header = () => {
 
     const classes = useStyles();
-    const [auth, setAuth] = useState(true);
+    const [auth/*, setAuth*/] = useState(true);
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
 
