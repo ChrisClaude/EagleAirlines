@@ -9,12 +9,15 @@ import {
     TableRow,
     TableCell,
     TableBody,
+    TableSortLabel,
+    TablePagination,
     Paper,
     CircularProgress,
     Container,
-    Box, Typography, TablePagination
+    Box, Typography,
 } from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
+import PropTypes from "prop-types";
 
 const useStyles = makeStyles((theme) => ({
     gridContainer: {
@@ -29,10 +32,68 @@ const useStyles = makeStyles((theme) => ({
 
     tableRoot: {
         width: "100%"
-    }
+    },
+
+    visuallyHidden: {
+        border: 0,
+        clip: 'rect(0 0 0 0)',
+        height: 1,
+        margin: -1,
+        overflow: 'hidden',
+        padding: 0,
+        position: 'absolute',
+        top: 20,
+        width: 1,
+    },
 }));
 
+function EnhancedTableHead(props) {
+    const {classes, order, orderBy, onRequestSort} = props;
+    const createSortHandler = (property) => (event) => {
+        onRequestSort(event, property);
+    };
 
+    const headCells = [
+        // {id: 'Id', numeric: true}, // TODO: sorting by id needs to be added on the server
+        {id: 'Name', numeric: false},
+        {id: 'Country', numeric: false},
+        {id: 'City', numeric: false},
+    ];
+
+
+    return (
+        <TableHead>
+            <TableRow>
+                <TableCell align="left">Id</TableCell>
+                {headCells.map((headCell) => (
+                    <TableCell
+                        key={headCell.id}
+                        sortDirection={orderBy === headCell.id ? order : false}
+                    >
+                        <TableSortLabel
+                            active={orderBy === headCell.id}
+                            direction={orderBy === headCell.id ? order : 'asc'}
+                            onClick={createSortHandler(headCell.id)}
+                        >
+                            {headCell.id}
+                            {orderBy === headCell.id ? (
+                                <span className={classes.visuallyHidden}>
+                  {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                </span>
+                            ) : null}
+                        </TableSortLabel>
+                    </TableCell>
+                ))}
+                <TableCell align="left">IATA</TableCell>
+                <TableCell align="left">ICIAO</TableCell>
+                <TableCell align="left">Timezone</TableCell>
+                <TableCell align="left">Latitude</TableCell>
+                <TableCell align="left">Longitude</TableCell>
+                <TableCell align="left">Altitude</TableCell>
+            </TableRow>
+        </TableHead>
+    );
+}
 
 const Home = () => {
     const classes = useStyles();
@@ -43,6 +104,8 @@ const Home = () => {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
 
+    const [order, setOrder] = React.useState('asc');
+    const [orderBy, setOrderBy] = React.useState('name');
 
 
     useEffect(() => {
@@ -55,6 +118,25 @@ const Home = () => {
             .catch(err => console.error(err));
 
     }, [rowsPerPage]);
+
+
+    const handleRequestSort = (event, property) => {
+        const isAsc = orderBy === property && order === 'asc';
+        setOrder(isAsc ? 'desc' : 'asc');
+        setOrderBy(property);
+
+        axios.get(`https://localhost:6001/api/airports?pageIndex=${page+1}` +
+        `&pageSize=${rowsPerPage}&sort=${ isAsc? property.toLowerCase() + "_desc" : property.toLowerCase()}`)
+            .then(res => {
+                setAirports(res.data);
+                setPaginationInfo(JSON.parse(res.headers["x-pagination"]));
+            })
+            .catch(err => console.error(err));
+
+        setPage(0);
+
+        console.log(`orderBy ${orderBy}, order ${order}`);
+    };
 
 
     const displayAirports = (airports) => {
@@ -70,7 +152,7 @@ const Home = () => {
             }
 
 
-            axios.get(`https://localhost:6001/api/airports?pageIndex=${newPage+1}&pageSize=${rowsPerPage}`)
+            axios.get(`https://localhost:6001/api/airports?pageIndex=${newPage + 1}&pageSize=${rowsPerPage}`)
                 .then(res => {
                     setAirports(res.data);
                     setPaginationInfo(JSON.parse(res.headers["x-pagination"]));
@@ -97,23 +179,15 @@ const Home = () => {
             <Paper className={classes.tableRoot}>
                 <TableContainer>
                     <Table stickyHeader aria-label="sticky table">
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Id</TableCell>
-                                <TableCell align="left">Name</TableCell>
-                                <TableCell align="left">Country</TableCell>
-                                <TableCell align="left">City</TableCell>
-                                <TableCell align="left">IATA</TableCell>
-                                <TableCell align="left">ICIAO</TableCell>
-                                <TableCell align="left">Timezone</TableCell>
-                                <TableCell align="left">Latitude</TableCell>
-                                <TableCell align="left">Longitude</TableCell>
-                                <TableCell align="left">Altitude</TableCell>
-                            </TableRow>
-                        </TableHead>
+                        <EnhancedTableHead
+                            classes={classes}
+                            order={order}
+                            orderBy={orderBy}
+                            onRequestSort={handleRequestSort}
+                        />
                         <TableBody>
                             {airports.map((airport) => (
-                                <TableRow key={airport.id}>
+                                <TableRow key={airport.id} hover>
                                     <TableCell component="th" scope="row">
                                         {airport.id}
                                     </TableCell>
@@ -122,10 +196,14 @@ const Home = () => {
                                     <TableCell align="left">{airport.city}</TableCell>
                                     <TableCell align="left">{airport.iata}</TableCell>
                                     <TableCell align="left">{airport.iciao}</TableCell>
-                                    <TableCell align="left">{airport.timezone > 0? "+" + airport.timezone : airport.timezone}</TableCell>
-                                    <TableCell align="left">{airport.latitude > 0? "+" + airport.latitude : airport.latitude}</TableCell>
-                                    <TableCell align="left">{airport.longitude > 0? "+" + airport.longitude : airport.longitude}</TableCell>
-                                    <TableCell align="left">{airport.altitude > 0? "+" + airport.altitude : airport.altitude}</TableCell>
+                                    <TableCell
+                                        align="left">{airport.timezone > 0 ? "+" + airport.timezone : airport.timezone}</TableCell>
+                                    <TableCell
+                                        align="left">{airport.latitude > 0 ? "+" + airport.latitude : airport.latitude}</TableCell>
+                                    <TableCell
+                                        align="left">{airport.longitude > 0 ? "+" + airport.longitude : airport.longitude}</TableCell>
+                                    <TableCell
+                                        align="left">{airport.altitude > 0 ? "+" + airport.altitude : airport.altitude}</TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
@@ -160,6 +238,8 @@ const Home = () => {
                     </Container>
                 </Grid>
             </Grid>
+
+
             <Box component="footer" mt={2} p={2} bgcolor="primary.main" color="white">
                 <Typography>
                     Eagle Airlines &copy;2020
@@ -170,3 +250,11 @@ const Home = () => {
 };
 
 export default Home;
+
+
+EnhancedTableHead.propTypes = {
+    classes: PropTypes.object.isRequired,
+    onRequestSort: PropTypes.func.isRequired,
+    order: PropTypes.oneOf(['asc', 'desc']).isRequired,
+    orderBy: PropTypes.string.isRequired,
+};
