@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { Fragment, useEffect, useState } from 'react';
+import React, {Fragment, useEffect, useState} from 'react';
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -20,7 +20,7 @@ export default function Asynchronous({srcUrl, label}) {
 
         (async () => {
             const response = await axios.get(srcUrl);
-            const data = response.data;
+            const data = response.data.length < 7 ? response.data : response.data.slice(0, 8);
 
             if (active) {
                 setOptions(Object.keys(data).map((key) => data[key]));
@@ -38,6 +38,18 @@ export default function Asynchronous({srcUrl, label}) {
         }
     }, [open]);
 
+    const searchAirports = async (event) => {
+        const value = event.target.value;
+
+        if (value === undefined || value.length < 3)
+            return;
+
+        const response = await axios.get(`${srcUrl}?search=${value}`);
+        const data = response.data.length < 7 ? response.data : response.data.slice(0, 8);
+
+        setOptions(Object.keys(data).map((key) => data[key]));
+    };
+
     // console.log(options);
 
     return (
@@ -49,10 +61,11 @@ export default function Asynchronous({srcUrl, label}) {
             onClose={() => {
                 setOpen(false);
             }}
-            getOptionSelected={(option, value) => option.name === value.name}
+            getOptionSelected={(option, value) => option.name.search(value.name) > 0 }
             getOptionLabel={(option) => option.name}
             options={options}
             loading={loading}
+            onInputChange={searchAirports}
             renderInput={(params) => (
                 <TextField
                     {...params}
