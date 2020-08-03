@@ -18,13 +18,14 @@ import {
 } from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import PropTypes from "prop-types";
+import AutoComplete from "./Components/AutoComplete";
 
 const useStyles = makeStyles((theme) => ({
     gridContainer: {
         paddingTop: theme.spacing(2)
     },
 
-    tableContainer: {
+    loaderContainer: {
         display: "flex",
         justifyContent: "center",
         alignItems: "center"
@@ -44,6 +45,10 @@ const useStyles = makeStyles((theme) => ({
         position: 'absolute',
         top: 20,
         width: 1,
+    },
+
+    searchGrid: {
+        marginBottom: theme.spacing(2)
     },
 }));
 
@@ -125,8 +130,8 @@ const Home = () => {
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
 
-        axios.get(`https://localhost:6001/api/airports?pageIndex=${page+1}` +
-        `&pageSize=${rowsPerPage}&sort=${ isAsc? property.toLowerCase() + "_desc" : property.toLowerCase()}`)
+        axios.get(`https://localhost:6001/api/airports?pageIndex=${page + 1}` +
+            `&pageSize=${rowsPerPage}&sort=${isAsc ? property.toLowerCase() + "_desc" : property.toLowerCase()}`)
             .then(res => {
                 setAirports(res.data);
                 setPaginationInfo(JSON.parse(res.headers["x-pagination"]));
@@ -142,7 +147,11 @@ const Home = () => {
     const displayAirports = (airports) => {
 
         if (!(airports !== undefined && airports.length > 1 && paginationInfo !== undefined))
-            return <CircularProgress/>;
+            return (
+                <Container className={classes.loaderContainer}>
+                    <CircularProgress/>
+                </Container>
+            );
 
 
         const handleChangePage = (event, newPage) => {
@@ -226,20 +235,22 @@ const Home = () => {
     return (
         <>
             <Header/>
-            <Grid
-                container
-                direction="row"
-                justify="center"
-                className={classes.gridContainer}
-            >
-                <Grid item xs={12}>
-                    <Container maxWidth="lg" className={classes.tableContainer}>
+            <Container>
+                <Grid
+                    container
+                    direction="row"
+                    justify="center"
+                    className={classes.gridContainer}
+                >
+                    <Grid item xs={12} sm={6} className={classes.searchGrid}>
+                        <AutoComplete srcUrl="https://localhost:6001/api/airports" label="Search airports"/>
+                    </Grid>
+                    <Grid item xs={12}>
                         {displayAirports(airports)}
-                    </Container>
+                    </Grid>
                 </Grid>
-            </Grid>
 
-
+            </Container>
             <Box component="footer" mt={2} p={2} bgcolor="primary.main" color="white">
                 <Typography>
                     Eagle Airlines &copy;2020
