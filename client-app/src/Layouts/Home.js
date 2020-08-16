@@ -112,17 +112,19 @@ const Home = () => {
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('name');
 
+    const apiEndpoint = process.env.REACT_APP_API_ENDPOINT;
+
 
     useEffect(() => {
 
-        axios.get(`https://localhost:6001/api/airports?pageSize=${rowsPerPage}`)
+        axios.get(`${apiEndpoint}/airports?pageSize=${rowsPerPage}`)
             .then(res => {
                 setAirports(res.data);
                 setPaginationInfo(JSON.parse(res.headers["x-pagination"]));
             })
             .catch(err => console.error(err));
 
-    }, [rowsPerPage]);
+    }, [rowsPerPage, apiEndpoint]);
 
 
     const handleRequestSort = (event, property) => {
@@ -130,7 +132,7 @@ const Home = () => {
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
 
-        axios.get(`https://localhost:6001/api/airports?pageIndex=${page + 1}` +
+        axios.get(`${apiEndpoint}/airports?pageIndex=${page + 1}` +
             `&pageSize=${rowsPerPage}&sort=${isAsc ? property.toLowerCase() + "_desc" : property.toLowerCase()}`)
             .then(res => {
                 setAirports(res.data);
@@ -161,7 +163,7 @@ const Home = () => {
             }
 
 
-            axios.get(`https://localhost:6001/api/airports?pageIndex=${newPage + 1}&pageSize=${rowsPerPage}`)
+            axios.get(`${apiEndpoint}/airports?pageIndex=${newPage + 1}&pageSize=${rowsPerPage}`)
                 .then(res => {
                     setAirports(res.data);
                     setPaginationInfo(JSON.parse(res.headers["x-pagination"]));
@@ -174,7 +176,7 @@ const Home = () => {
         const handleChangeRowsPerPage = (event) => {
             setRowsPerPage(event.target.value);
 
-            axios.get(`https://localhost:6001/api/airports?pageSize=${event.target.value}`)
+            axios.get(`${apiEndpoint}/airports?pageSize=${event.target.value}`)
                 .then(res => {
                     setAirports(res.data);
                     setPaginationInfo(JSON.parse(res.headers["x-pagination"]));
@@ -243,7 +245,7 @@ const Home = () => {
                     className={classes.gridContainer}
                 >
                     <Grid item xs={12} sm={6} className={classes.searchGrid}>
-                        <AutoComplete srcUrl="https://localhost:6001/api/airports" label="Search airports"/>
+                        <AutoComplete srcUrl={apiEndpoint + "/airports"} label="Search airports"/>
                     </Grid>
                     <Grid item xs={12}>
                         {displayAirports(airports)}
