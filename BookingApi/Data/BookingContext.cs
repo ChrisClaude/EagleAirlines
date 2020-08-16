@@ -22,6 +22,7 @@ namespace BookingApi.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            
             modelBuilder.Entity<Airport>().ToTable("Airport");
             modelBuilder.Entity<Departure>().ToTable("Departure");
             modelBuilder.Entity<Destination>().ToTable("Destination");
