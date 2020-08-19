@@ -22,12 +22,149 @@ namespace BookingApi.Data
 
             // Initialize destinations
             InitializeDestinations(context);
+
+            // Initialize seats
+            InitializeSeats(context);
+        }
+
+        private static void InitializeSeats(BookingContext context)
+        {
+            if (context.Seats.Any()) return;
+
+            var seats = new List<Seat>()
+            {
+                new Seat()
+                {
+                    SeatNum = "1A",
+                    Cabin = "Bus",
+                    FlightId = 1
+                },
+                new Seat()
+                {
+                    SeatNum = "2A",
+                    Cabin = "Bus",
+                    FlightId = 1
+                },
+                new Seat()
+                {
+                    SeatNum = "3A",
+                    Cabin = "Bus",
+                    FlightId = 1
+                },
+                new Seat()
+                {
+                    SeatNum = "4B",
+                    Cabin = "Bus",
+                    FlightId = 1
+                },
+                new Seat()
+                {
+                    SeatNum = "5B",
+                    Cabin = "Bus",
+                    FlightId = 1
+                },
+                new Seat()
+                {
+                    SeatNum = "10A",
+                    Cabin = "Eco",
+                    FlightId = 1
+                },
+                new Seat()
+                {
+                    SeatNum = "21C",
+                    Cabin = "Eco",
+                    FlightId = 1
+                },
+                new Seat()
+                {
+                    SeatNum = "21D",
+                    Cabin = "Eco",
+                    FlightId = 1
+                },
+                new Seat()
+                {
+                    SeatNum = "11B",
+                    Cabin = "Eco",
+                    FlightId = 1
+                },
+                new Seat()
+                {
+                    SeatNum = "25B",
+                    Cabin = "Eco",
+                    FlightId = 1
+                },
+                new Seat()
+                {
+                    SeatNum = "1A",
+                    Cabin = "Bus",
+                    FlightId = 3
+                },
+                new Seat()
+                {
+                    SeatNum = "2A",
+                    Cabin = "Bus",
+                    FlightId = 3
+                },
+                new Seat()
+                {
+                    SeatNum = "3A",
+                    Cabin = "Bus",
+                    FlightId = 2
+                },
+                new Seat()
+                {
+                    SeatNum = "4B",
+                    Cabin = "Bus",
+                    FlightId = 3
+                },
+                new Seat()
+                {
+                    SeatNum = "5B",
+                    Cabin = "Bus",
+                    FlightId = 2
+                },
+                new Seat()
+                {
+                    SeatNum = "10A",
+                    Cabin = "Eco",
+                    FlightId = 3
+                },
+                new Seat()
+                {
+                    SeatNum = "21C",
+                    Cabin = "Eco",
+                    FlightId = 2
+                },
+                new Seat()
+                {
+                    SeatNum = "21D",
+                    Cabin = "Eco",
+                    FlightId = 2
+                },
+                new Seat()
+                {
+                    SeatNum = "11B",
+                    Cabin = "Eco",
+                    FlightId = 3
+                },
+                new Seat()
+                {
+                    SeatNum = "25B",
+                    Cabin = "Eco",
+                    FlightId = 2
+                }
+            };
+
+            context.Seats.AddRange(seats);
+            context.SaveChanges();
+
+            Console.WriteLine("Seats data seeded");
         }
 
         private static void InitializeDestinations(BookingContext context)
         {
             if (context.Destinations.Any()) return;
-            
+
             var destinations = new List<Destination>()
             {
                 new Destination()
@@ -52,14 +189,14 @@ namespace BookingApi.Data
 
             context.Destinations.AddRange(destinations);
             context.SaveChanges();
-            
-            Console.WriteLine("Destinations Table data initialized");
+
+            Console.WriteLine("Destinations data seeded");
         }
 
         private static void InitializeDepartures(BookingContext context)
         {
             if (context.Departures.Any()) return;
-            
+
             var departures = new List<Departure>()
             {
                 new Departure()
@@ -84,14 +221,14 @@ namespace BookingApi.Data
 
             context.Departures.AddRange(departures);
             context.SaveChanges();
-            
-            Console.WriteLine("Departures Table data initialized");
+
+            Console.WriteLine("Departures data seeded");
         }
 
         private static void InitializeFlights(BookingContext context)
         {
             if (context.Flights.Any()) return;
-            
+
             var flights = new List<Flight>()
             {
                 new Flight()
@@ -113,8 +250,8 @@ namespace BookingApi.Data
 
             context.Flights.AddRange(flights);
             context.SaveChanges();
-            
-            Console.WriteLine("Flights table data initialized");
+
+            Console.WriteLine("Flights data seeded");
         }
 
         private static void InitializeAirports(BookingContext context)
@@ -125,8 +262,8 @@ namespace BookingApi.Data
             var airports = ReadAirportJsonFile();
             context.Airports.AddRange(airports);
             context.SaveChanges();
-            
-            Console.WriteLine("Airports Table data initialized");
+
+            Console.WriteLine("Airports data seeded");
         }
 
         private static IEnumerable<Airport> ReadAirportJsonFile()
@@ -136,35 +273,35 @@ namespace BookingApi.Data
             Console.WriteLine("Read file\n");
 
             return (from item in jArray
-                let name = ((string) item["name"]).Trim()
-                let city = ((string) item["city"]).Trim()
-                let country = ((string) item["country"]).Trim()
-                let iata = ((string) item["IATA"]).Trim()
-                let iciao = ((string) item["ICIAO"]).Trim()
-                let latitude = ((string) item["latitude"]).Trim()
-                let longitude = ((string) item["longitude"]).Trim()
-                let altitude = ((string) item["altitude"]).Trim()
-                let timezone = ((string) item["timezone"]).Trim()
-                let dst = ((string) item["dst"]).Trim()
-                let tz = ((string) item["tz"]).Trim()
-                let stationType = ((string) item["station_type"]).Trim()
-                let source = ((string) item["source"]).Trim()
-                select new Airport
-                {
-                    Name = name,
-                    City = city,
-                    Country = country,
-                    Iata = iata,
-                    Iciao = iciao,
-                    Latitude = latitude,
-                    Longitude = longitude,
-                    Altitude = altitude,
-                    Timezone = timezone,
-                    Dst = dst,
-                    Tz = tz,
-                    StationType = stationType,
-                    Source = source
-                }).ToList();
+                    let name = ((string)item["name"]).Trim()
+                    let city = ((string)item["city"]).Trim()
+                    let country = ((string)item["country"]).Trim()
+                    let iata = ((string)item["IATA"]).Trim()
+                    let iciao = ((string)item["ICIAO"]).Trim()
+                    let latitude = ((string)item["latitude"]).Trim()
+                    let longitude = ((string)item["longitude"]).Trim()
+                    let altitude = ((string)item["altitude"]).Trim()
+                    let timezone = ((string)item["timezone"]).Trim()
+                    let dst = ((string)item["dst"]).Trim()
+                    let tz = ((string)item["tz"]).Trim()
+                    let stationType = ((string)item["station_type"]).Trim()
+                    let source = ((string)item["source"]).Trim()
+                    select new Airport
+                    {
+                        Name = name,
+                        City = city,
+                        Country = country,
+                        Iata = iata,
+                        Iciao = iciao,
+                        Latitude = latitude,
+                        Longitude = longitude,
+                        Altitude = altitude,
+                        Timezone = timezone,
+                        Dst = dst,
+                        Tz = tz,
+                        StationType = stationType,
+                        Source = source
+                    }).ToList();
         }
     }
 }
