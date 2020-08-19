@@ -10,7 +10,7 @@ namespace BookingApi.Models
 {
     public class Flight
     {
-        public int ID { get; set; }
+        public int Id { get; set; }
         public double Miles 
         { 
             get 
@@ -28,9 +28,9 @@ namespace BookingApi.Models
 
         public string Name { get; set; }
         public string Description { get; set; }
-
         public Departure Departure { get; set; }
         public Destination Destination { get; set; }
+        public IEnumerable<Seat> Seats { get; set; }
 
     }
 }

@@ -167,7 +167,7 @@ namespace BookingApi.Controllers
         {
             var departureModel = _mapper.Map<Departure>(departureCreateDto);
 
-            var isFlightIdUnique = await ((DepartureRepo) _repository).IsFlightIdUnique(departureModel.FlightID);
+            var isFlightIdUnique = await ((DepartureRepo) _repository).IsFlightIdUnique(departureModel.FlightId);
             if (!isFlightIdUnique)
             {
                 // the flightId isn't unique
@@ -179,7 +179,7 @@ namespace BookingApi.Controllers
             await _repository.SaveChangesAsync();
 
             // here we query the departure that we just created in order to load its navigation property
-            departureModel = await _repository.GetByIdAsync(departureModel.ID);
+            departureModel = await _repository.GetByIdAsync(departureModel.Id);
             var departureReadDto = _mapper.Map<DepartureReadDto>(departureModel);
 
             return CreatedAtRoute(nameof(GetDepartureAsync), new {Id = departureReadDto.ID}, departureReadDto);

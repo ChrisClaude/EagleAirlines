@@ -62,7 +62,7 @@ namespace BookingApi.Data.Repository.SeatRepo
         {
             return await _context.Seats
                 .Include(s => s.Flight)
-                .SingleOrDefaultAsync(s => s.ID == id);
+                .SingleOrDefaultAsync(s => s.Id == id);
         }
 
         public async Task CreateAsync(Seat seat)
@@ -70,6 +70,13 @@ namespace BookingApi.Data.Repository.SeatRepo
             if (seat == null)
             {
                 throw new ArgumentNullException(nameof(seat));
+            }
+
+            Seat duplicatedSeat = await _context.Seats.Where(s => s.SeatNum == seat.SeatNum && s.FlightId == seat.FlightId).FirstOrDefaultAsync();
+
+            if (duplicatedSeat != null)
+            {
+                throw new ArgumentException(nameof(seat));
             }
 
             await _context.Seats.AddAsync(seat);

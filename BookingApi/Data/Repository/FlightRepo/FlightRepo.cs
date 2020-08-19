@@ -71,7 +71,7 @@ namespace BookingApi.Data.Repository.FlightRepo
                 .Include((f => f.Destination))
                 .ThenInclude(destination => destination.Airport)
                 .AsNoTracking()
-                .SingleOrDefaultAsync(f => f.ID == id);
+                .SingleOrDefaultAsync(f => f.Id == id);
         }
 
         public async Task CreateAsync(Flight flight)

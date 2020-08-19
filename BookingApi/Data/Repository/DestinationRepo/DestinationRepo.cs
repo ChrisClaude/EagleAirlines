@@ -52,10 +52,10 @@ namespace BookingApi.Data.Repository.DestinationRepo
             destinations = sort switch
             {
                 "date_desc" => destinations.OrderByDescending(d => d.Date),
-                "flight" => destinations.OrderBy(d => d.FlightID),
-                "flight_desc" => destinations.OrderBy(d => d.FlightID),
-                "airport" => destinations.OrderByDescending(d => d.AirportID),
-                "airport_desc" => destinations.OrderByDescending(d => d.AirportID),
+                "flight" => destinations.OrderBy(d => d.FlightId),
+                "flight_desc" => destinations.OrderBy(d => d.FlightId),
+                "airport" => destinations.OrderByDescending(d => d.AirportId),
+                "airport_desc" => destinations.OrderByDescending(d => d.AirportId),
                 _ => destinations.OrderBy(d => d.Date)
             };
 
@@ -66,7 +66,7 @@ namespace BookingApi.Data.Repository.DestinationRepo
         {
             return await _context.Destinations
                 .Include(des => des.Airport)
-                .SingleOrDefaultAsync(des => des.ID == id);
+                .SingleOrDefaultAsync(des => des.Id == id);
         }
 
         public async Task CreateAsync(Destination destination)
@@ -96,7 +96,7 @@ namespace BookingApi.Data.Repository.DestinationRepo
 
         public async Task<bool> IsFlightIdUnique(int flightId)
         {
-            var destination = await _context.Destinations.Where(d => d.FlightID == flightId).SingleOrDefaultAsync();
+            var destination = await _context.Destinations.Where(d => d.FlightId == flightId).SingleOrDefaultAsync();
             return destination == null;
         }
         

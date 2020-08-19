@@ -30,6 +30,10 @@ namespace BookingApi.Data
             modelBuilder.Entity<Seat>().ToTable("Seat");
             modelBuilder.Entity<Booking>().ToTable("Booking");
             modelBuilder.Entity<Passenger>().ToTable("Passenger");
+            
+            modelBuilder.Entity<Seat>()
+                .HasIndex(s => new {s.SeatNum, FlightID = s.FlightId})
+                .IsUnique();
         }
     }
 }

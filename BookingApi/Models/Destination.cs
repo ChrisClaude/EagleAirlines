@@ -9,13 +9,13 @@ namespace BookingApi.Models
 {
     public class Destination
     {
-        public int ID { get; set; }
+        public int Id { get; set; }
 
         [DataType(DataType.DateTime)]
         public DateTime Date { get; set; }
-        public int FlightID { get; set; }
+        public int FlightId { get; set; }
         [JsonIgnore]
-        public int AirportID { get; set; }
+        public int AirportId { get; set; }
 
         [JsonIgnore]
         public Flight Flight { get; set; }

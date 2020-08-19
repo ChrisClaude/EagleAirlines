@@ -1,56 +1,155 @@
 ﻿using BookingApi.Models;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace BookingApi.Data
 {
-    public class DbInitializer
+    public static class DbInitializer
     {
         public static void Initialize(BookingContext context)
         {
-            if (context.Airports.Any())
-            {
-                return;
-            }
+            // Initialize airports
+            InitializeAirports(context);
 
-            List<Airport> airports = readAiportJsonFile();
-            context.Airports.AddRange(airports);
-            context.SaveChanges();
+            // Initialize flights
+            InitializeFlights(context);
+
+            // Initialize departures
+            InitializeDepartures(context);
+
+            // Initialize destinations
+            InitializeDestinations(context);
         }
 
-        public static List<Airport> readAiportJsonFile()
+        private static void InitializeDestinations(BookingContext context)
         {
-            List<Airport> airports = new List<Airport>();
+            if (context.Destinations.Any()) return;
+            
+            var destinations = new List<Destination>()
+            {
+                new Destination()
+                {
+                    Date = new DateTime(2020, 9, 14, 20, 15, 53),
+                    AirportId = 5479,
+                    FlightId = 1
+                },
+                new Destination()
+                {
+                    Date = new DateTime(2020, 11, 1, 16, 15, 53),
+                    AirportId = 5476,
+                    FlightId = 2
+                },
+                new Destination()
+                {
+                    Date = new DateTime(2020, 12, 1, 19, 0, 53),
+                    AirportId = 5381,
+                    FlightId = 3
+                },
+            };
 
-            JArray jArray = JArray.Parse(File.ReadAllText(@".\Data\airports.json"));
+            context.Destinations.AddRange(destinations);
+            context.SaveChanges();
+            
+            Console.WriteLine("Destinations Table data initialized");
+        }
 
+        private static void InitializeDepartures(BookingContext context)
+        {
+            if (context.Departures.Any()) return;
+            
+            var departures = new List<Departure>()
+            {
+                new Departure()
+                {
+                    Date = new DateTime(2020, 9, 14, 10, 0, 53),
+                    AirportId = 5382,
+                    FlightId = 1
+                },
+                new Departure()
+                {
+                    Date = new DateTime(2020, 11, 1, 10, 0, 53),
+                    AirportId = 5382,
+                    FlightId = 2
+                },
+                new Departure()
+                {
+                    Date = new DateTime(2020, 12, 1, 10, 0, 53),
+                    AirportId = 5382,
+                    FlightId = 3
+                }
+            };
+
+            context.Departures.AddRange(departures);
+            context.SaveChanges();
+            
+            Console.WriteLine("Departures Table data initialized");
+        }
+
+        private static void InitializeFlights(BookingContext context)
+        {
+            if (context.Flights.Any()) return;
+            
+            var flights = new List<Flight>()
+            {
+                new Flight()
+                {
+                    Name = "EA 0846",
+                    Description = "New Flight, fly with Eagle Airlines",
+                },
+                new Flight()
+                {
+                    Name = "EA 0746",
+                    Description = "New Flight, fly with Eagle Airlines",
+                },
+                new Flight()
+                {
+                    Name = "EA 0741",
+                    Description = "New Flight, fly with Eagle Airlines",
+                }
+            };
+
+            context.Flights.AddRange(flights);
+            context.SaveChanges();
+            
+            Console.WriteLine("Flights table data initialized");
+        }
+
+        private static void InitializeAirports(BookingContext context)
+        {
+            if (context.Airports.Any())
+                return;
+
+            var airports = ReadAirportJsonFile();
+            context.Airports.AddRange(airports);
+            context.SaveChanges();
+            
+            Console.WriteLine("Airports Table data initialized");
+        }
+
+        private static IEnumerable<Airport> ReadAirportJsonFile()
+        {
+            var jArray = JArray.Parse(File.ReadAllText(@".\Data\airports.json"));
 
             Console.WriteLine("Read file\n");
 
-            int i = 0;
-
-            foreach (var item in jArray)
-            {
-                string name = ((string)item["name"]).Trim();
-                string city = ((string)item["city"]).Trim();
-                string country = ((string)item["country"]).Trim();
-                string iata = ((string)item["IATA"]).Trim();
-                string iciao = ((string)item["ICIAO"]).Trim();
-                string latitude = ((string)item["latitude"]).Trim();
-                string longitude = ((string)item["longitude"]).Trim();
-                string altitude = ((string)item["altitude"]).Trim();
-                string timezone = ((string)item["timezone"]).Trim();
-                string dst = ((string)item["dst"]).Trim();
-                string tz = ((string)item["tz"]).Trim();
-                string stationType = ((string)item["station_type"]).Trim();
-                string source = ((string)item["source"]).Trim();
-
-                airports.Add(new Airport
+            return (from item in jArray
+                let name = ((string) item["name"]).Trim()
+                let city = ((string) item["city"]).Trim()
+                let country = ((string) item["country"]).Trim()
+                let iata = ((string) item["IATA"]).Trim()
+                let iciao = ((string) item["ICIAO"]).Trim()
+                let latitude = ((string) item["latitude"]).Trim()
+                let longitude = ((string) item["longitude"]).Trim()
+                let altitude = ((string) item["altitude"]).Trim()
+                let timezone = ((string) item["timezone"]).Trim()
+                let dst = ((string) item["dst"]).Trim()
+                let tz = ((string) item["tz"]).Trim()
+                let stationType = ((string) item["station_type"]).Trim()
+                let source = ((string) item["source"]).Trim()
+                select new Airport
                 {
                     Name = name,
                     City = city,
@@ -65,12 +164,7 @@ namespace BookingApi.Data
                     Tz = tz,
                     StationType = stationType,
                     Source = source
-                });
-
-                Console.WriteLine(++i);
-            }
-
-            return airports;
+                }).ToList();
         }
     }
 }

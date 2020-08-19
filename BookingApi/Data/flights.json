@@ -1,0 +1,137 @@
+﻿[
+  {
+    "id": 1,
+    "miles": 0.0,
+    "duration": 0,
+    "name": "EA 0846",
+    "description": "flight from Cape Town to Brazzaville",
+    "departure": {
+      "id": 1,
+      "date": "2020-09-14T10:00:53.036",
+      "flightID": 1,
+      "airport": {
+        "id": 5381,
+        "name": "Cape Town International Airport",
+        "city": "Cape Town",
+        "country": "South Africa",
+        "iata": "CPT",
+        "iciao": "FACT",
+        "latitude": "-33.9648017883",
+        "longitude": "18.6016998291",
+        "altitude": "151",
+        "timezone": "2",
+        "dst": "U",
+        "tz": "Africa/Johannesburg"
+      }
+    },
+    "destination": {
+      "id": 1,
+      "date": "2020-09-14T20:15:53.036",
+      "flightID": 1,
+      "airport": {
+        "id": 5479,
+        "name": "Maya-Maya Airport",
+        "city": "Brazzaville",
+        "country": "Congo (Brazzaville)",
+        "iata": "BZV",
+        "iciao": "FCBB",
+        "latitude": "-4.251699924468994",
+        "longitude": "15.253000259399414",
+        "altitude": "1048",
+        "timezone": "1",
+        "dst": "N",
+        "tz": "Africa/Brazzaville"
+      }
+    }
+  },
+  {
+    "id": 2,
+    "miles": 0.0,
+    "duration": 0,
+    "name": "EA 0746",
+    "description": "flight from Cape Town to Pointe-Noire",
+    "departure": {
+      "id": 2,
+      "date": "2020-11-01T10:00:53.036",
+      "flightID": 2,
+      "airport": {
+        "id": 5381,
+        "name": "Cape Town International Airport",
+        "city": "Cape Town",
+        "country": "South Africa",
+        "iata": "CPT",
+        "iciao": "FACT",
+        "latitude": "-33.9648017883",
+        "longitude": "18.6016998291",
+        "altitude": "151",
+        "timezone": "2",
+        "dst": "U",
+        "tz": "Africa/Johannesburg"
+      }
+    },
+    "destination": {
+      "id": 3,
+      "date": "2020-11-01T16:15:53.036",
+      "flightID": 2,
+      "airport": {
+        "id": 5476,
+        "name": "Pointe Noire Airport",
+        "city": "Pointe-noire",
+        "country": "Congo (Brazzaville)",
+        "iata": "PNR",
+        "iciao": "FCPP",
+        "latitude": "-4.816030025482178",
+        "longitude": "11.88659954071045",
+        "altitude": "55",
+        "timezone": "1",
+        "dst": "N",
+        "tz": "Africa/Brazzaville"
+      }
+    }
+  },
+  {
+    "id": 3,
+    "miles": 0.0,
+    "duration": 0,
+    "name": "EA 0746",
+    "description": "flight from Cape Town to Paris",
+    "departure": {
+      "id": 14,
+      "date": "2020-11-01T10:00:53.036",
+      "flightID": 3,
+      "airport": {
+        "id": 5381,
+        "name": "Cape Town International Airport",
+        "city": "Cape Town",
+        "country": "South Africa",
+        "iata": "CPT",
+        "iciao": "FACT",
+        "latitude": "-33.9648017883",
+        "longitude": "18.6016998291",
+        "altitude": "151",
+        "timezone": "2",
+        "dst": "U",
+        "tz": "Africa/Johannesburg"
+      }
+    },
+    "destination": {
+      "id": 4,
+      "date": "2020-11-01T21:15:53.036",
+      "flightID": 3,
+      "airport": {
+        "id": 4035,
+        "name": "Charles de Gaulle International Airport",
+        "city": "Paris",
+        "country": "France",
+        "iata": "CDG",
+        "iciao": "LFPG",
+        "latitude": "49.012798",
+        "longitude": "2.55",
+        "altitude": "392",
+        "timezone": "1",
+        "dst": "E",
+        "tz": "Europe/Paris"
+      }
+    }
+  }
+]

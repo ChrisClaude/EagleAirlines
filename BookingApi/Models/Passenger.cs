@@ -8,7 +8,7 @@ namespace BookingApi.Models
 {
     public class Passenger
     {
-        public int ID { get; set; }
+        public int Id { get; set; }
         [DataType(DataType.EmailAddress)]
 
         [Required]

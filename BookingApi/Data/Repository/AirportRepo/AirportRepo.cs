@@ -50,7 +50,6 @@ namespace BookingApi.Data.Repository.AirportRepo
 
             airports = sort switch
             {
-                // TODO: Add sorting by Id
                 "name_desc" => airports.OrderByDescending(a => a.Name),
                 "country" => airports.OrderBy(a => a.Country),
                 "country_desc" => airports.OrderByDescending(a => a.Country),

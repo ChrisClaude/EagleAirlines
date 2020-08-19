@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookingApi.Migrations
 {
     [DbContext(typeof(BookingContext))]
-    [Migration("20200714224054_InitialMigrations")]
+    [Migration("20200819115700_InitialMigrations")]
     partial class InitialMigrations
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -23,7 +23,7 @@ namespace BookingApi.Migrations
 
             modelBuilder.Entity("BookingApi.Models.Airport", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -93,14 +93,14 @@ namespace BookingApi.Migrations
                         .HasColumnType("nvarchar(100)")
                         .HasMaxLength(100);
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
                     b.ToTable("Airport");
                 });
 
             modelBuilder.Entity("BookingApi.Models.Booking", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -111,45 +111,45 @@ namespace BookingApi.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("FlightID")
+                    b.Property<int>("FlightId")
                         .HasColumnType("int");
 
-                    b.Property<int>("PassengerID")
+                    b.Property<int>("PassengerId")
                         .HasColumnType("int");
 
                     b.Property<string>("Status")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
-                    b.HasIndex("FlightID");
+                    b.HasIndex("FlightId");
 
-                    b.HasIndex("PassengerID");
+                    b.HasIndex("PassengerId");
 
                     b.ToTable("Booking");
                 });
 
             modelBuilder.Entity("BookingApi.Models.Departure", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("AirportID")
+                    b.Property<int>("AirportId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("FlightID")
+                    b.Property<int>("FlightId")
                         .HasColumnType("int");
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
-                    b.HasIndex("AirportID");
+                    b.HasIndex("AirportId");
 
-                    b.HasIndex("FlightID")
+                    b.HasIndex("FlightId")
                         .IsUnique();
 
                     b.ToTable("Departure");
@@ -157,25 +157,25 @@ namespace BookingApi.Migrations
 
             modelBuilder.Entity("BookingApi.Models.Destination", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("AirportID")
+                    b.Property<int>("AirportId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("FlightID")
+                    b.Property<int>("FlightId")
                         .HasColumnType("int");
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
-                    b.HasIndex("AirportID");
+                    b.HasIndex("AirportId");
 
-                    b.HasIndex("FlightID")
+                    b.HasIndex("FlightId")
                         .IsUnique();
 
                     b.ToTable("Destination");
@@ -183,7 +183,7 @@ namespace BookingApi.Migrations
 
             modelBuilder.Entity("BookingApi.Models.Flight", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -194,14 +194,14 @@ namespace BookingApi.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
                     b.ToTable("Flight");
                 });
 
             modelBuilder.Entity("BookingApi.Models.Passenger", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -234,30 +234,34 @@ namespace BookingApi.Migrations
                         .HasColumnType("nvarchar(70)")
                         .HasMaxLength(70);
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
                     b.ToTable("Passenger");
                 });
 
             modelBuilder.Entity("BookingApi.Models.Seat", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("Cabin")
-                        .HasColumnType("int");
+                    b.Property<string>("Cabin")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("FlightID")
+                    b.Property<int>("FlightId")
                         .HasColumnType("int");
 
                     b.Property<string>("SeatNum")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
-                    b.HasIndex("FlightID");
+                    b.HasIndex("FlightId");
+
+                    b.HasIndex("SeatNum", "FlightId")
+                        .IsUnique();
 
                     b.ToTable("Seat");
                 });
@@ -266,13 +270,13 @@ namespace BookingApi.Migrations
                 {
                     b.HasOne("BookingApi.Models.Flight", "Flight")
                         .WithMany()
-                        .HasForeignKey("FlightID")
+                        .HasForeignKey("FlightId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("BookingApi.Models.Passenger", "Passenger")
                         .WithMany()
-                        .HasForeignKey("PassengerID")
+                        .HasForeignKey("PassengerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -281,13 +285,13 @@ namespace BookingApi.Migrations
                 {
                     b.HasOne("BookingApi.Models.Airport", "Airport")
                         .WithMany()
-                        .HasForeignKey("AirportID")
+                        .HasForeignKey("AirportId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("BookingApi.Models.Flight", "Flight")
                         .WithOne("Departure")
-                        .HasForeignKey("BookingApi.Models.Departure", "FlightID")
+                        .HasForeignKey("BookingApi.Models.Departure", "FlightId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -296,13 +300,13 @@ namespace BookingApi.Migrations
                 {
                     b.HasOne("BookingApi.Models.Airport", "Airport")
                         .WithMany()
-                        .HasForeignKey("AirportID")
+                        .HasForeignKey("AirportId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("BookingApi.Models.Flight", "Flight")
                         .WithOne("Destination")
-                        .HasForeignKey("BookingApi.Models.Destination", "FlightID")
+                        .HasForeignKey("BookingApi.Models.Destination", "FlightId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -310,8 +314,8 @@ namespace BookingApi.Migrations
             modelBuilder.Entity("BookingApi.Models.Seat", b =>
                 {
                     b.HasOne("BookingApi.Models.Flight", "Flight")
-                        .WithMany()
-                        .HasForeignKey("FlightID")
+                        .WithMany("Seats")
+                        .HasForeignKey("FlightId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

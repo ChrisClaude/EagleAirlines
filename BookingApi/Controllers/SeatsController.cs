@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using BookingApi.Data.Repository.SeatRepo;
@@ -37,15 +38,15 @@ namespace BookingApi.Controllers
         public async Task<ActionResult<IEnumerable<Seat>>> GetAllSeats([FromQuery] SeatQueryParameters parameters)
         {
             var seats = await _repository.GetAllAsync(parameters);
-                        
-            var metadata = new 
+
+            var metadata = new
             {
-                ((PaginatedList<Seat>) seats).ItemCount,
-                ((PaginatedList<Seat>) seats).PageSize,
-                ((PaginatedList<Seat>) seats).PageIndex,
-                ((PaginatedList<Seat>) seats).TotalPages,
-                ((PaginatedList<Seat>) seats).HasNextPage,
-                ((PaginatedList<Seat>) seats).HasPreviousPage
+                ((PaginatedList<Seat>)seats).ItemCount,
+                ((PaginatedList<Seat>)seats).PageSize,
+                ((PaginatedList<Seat>)seats).PageIndex,
+                ((PaginatedList<Seat>)seats).TotalPages,
+                ((PaginatedList<Seat>)seats).HasNextPage,
+                ((PaginatedList<Seat>)seats).HasPreviousPage
             };
 
 
@@ -60,7 +61,7 @@ namespace BookingApi.Controllers
         /// </summary>
         /// <param name="id">the id of the flight requested</param>
         /// <returns>An flight object</returns>
-        [HttpGet("{id:int}", Name = "GetSeat")]
+        [HttpGet("{id:int}", Name = "GetSeatAsync")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Seat>> GetSeatAsync(int id)
@@ -87,7 +88,7 @@ namespace BookingApi.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> UpdateSeatAsync(int id, SeatUpdateDto flightUpdateDto)
         {
-            if (id != flightUpdateDto.ID)
+            if (id != flightUpdateDto.Id)
             {
                 return BadRequest();
             }
@@ -150,26 +151,40 @@ namespace BookingApi.Controllers
 
             return NoContent();
         }
-        
+
         // POST: api/Seats
         /// <summary>
         /// Creates an flight 
         /// </summary>
-        /// <param name="flightCreateDto">The flight object to create.</param>
+        /// <param name="seatCreateDto">The flight object to create. [IMPORTANT] the cabin attribute only accepts values
+        /// 0 for Eco and 1 for Bus that respectively refer to Economy and Business classes.
+        /// </param>
         /// <returns></returns>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<ActionResult<Seat>> CreateSeatAsync(SeatCreateDto flightCreateDto)
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesDefaultResponseType]
+        public async Task<ActionResult<Seat>> CreateSeatAsync(SeatCreateDto seatCreateDto)
         {
-            var flightModel = _mapper.Map<Seat>(flightCreateDto);
-            await _repository.CreateAsync(flightModel);
+            // TODO: Make sure that the Cabin values are limited to "ECO" and "BUS"
+            var seatModel = _mapper.Map<Seat>(seatCreateDto);
+
+            try
+            {
+                await _repository.CreateAsync(seatModel);
+            }
+            catch (ArgumentException) // handle the ArgumentException when a duplicated seat is inserted for the same flight 
+            {
+                return BadRequest();
+            }
+
             await _repository.SaveChangesAsync();
 
-            var flightReadDto = _mapper.Map<SeatReadDto>(flightModel);
+            var seatReadDto = _mapper.Map<SeatReadDto>(seatModel);
 
-            return CreatedAtRoute(nameof(GetSeatAsync), new { Id = flightReadDto.ID }, flightReadDto);
+            return CreatedAtRoute(nameof(GetSeatAsync), new { Id = seatReadDto.Id }, seatReadDto);
         }
-        
+
         // DELETE: api/Seats/5
         /// <summary>
         /// Deletes an flight
