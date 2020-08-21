@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using BookingApi.Data.Repository.PassengerRepo;
-using BookingApi.Data.Repository.PassengerRepo;
 using BookingApi.Data.Util;
 using BookingApi.Dtos.PassengerDto;
 using BookingApi.Models;

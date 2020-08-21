@@ -13,9 +13,11 @@ using AutoMapper;
 using Newtonsoft.Json.Serialization;
 using Microsoft.IdentityModel.Tokens;
 using BookingApi.Data.Repository.AirportRepo;
+using BookingApi.Data.Repository.BookingRepo;
 using BookingApi.Data.Repository.DepartureRepo;
 using BookingApi.Data.Repository.DestinationRepo;
 using BookingApi.Data.Repository.FlightRepo;
+using BookingApi.Data.Repository.PassengerRepo;
 using BookingApi.Data.Repository.SeatRepo;
 using BookingApi.Models;
 
@@ -73,6 +75,8 @@ namespace BookingApi
             services.AddScoped<IDestinationRepo, DestinationRepo>();
             services.AddScoped<IFlightRepo, FlightRepo>();
             services.AddScoped<ISeatRepo, SeatRepo>();
+            services.AddScoped<IBookingRepo, BookingRepo>();
+            services.AddScoped<IPassengerRepo, PassengerRepo>();
 
             services.AddSwaggerGen(c =>
             {
