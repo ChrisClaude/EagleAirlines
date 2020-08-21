@@ -22,7 +22,7 @@ namespace BookingApi.Models
         [Required]
         [StringLength(70, MinimumLength = 4)]
         public string Surname { get; set; }
-        public DateTime DateOfBirth { get; set; }
+        public int Age { get; set; }
 
         [Required]
         [StringLength(70, MinimumLength = 2)]
@@ -35,5 +35,9 @@ namespace BookingApi.Models
         [Required]
         [StringLength(70, MinimumLength = 4)]
         public string Citizenship { get; set; }
+
+        public int BookingId { get; set; }
+        
+        public Booking Booking { get; set; }
     }
 }

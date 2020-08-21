@@ -31,13 +31,9 @@ namespace BookingApi.Data.Repository.BookingRepo
             else
             {
                 bookingsIq = from b in _context.Bookings
-                    .Include(booking => booking.Passenger)
-                    .Include(booking => booking.Flight)
-                    .ThenInclude(flight => flight.Departure)
-                    .ThenInclude(departure => departure.Airport)
-                    .Include(booking => booking.Flight)
-                    .ThenInclude(flight => flight.Destination)
-                    .ThenInclude(destination => destination.Airport)
+                    .Include(booking => booking.Passengers)
+                    .Include(booking => booking.Seats)
+                    .ThenInclude(seat => seat.Flight)
                     .AsNoTracking()
                     select b;
             }
@@ -76,13 +72,9 @@ namespace BookingApi.Data.Repository.BookingRepo
         public async Task<Booking> GetByIdAsync(Guid id)
         {
             return await _context.Bookings
-                .Include(booking => booking.Passenger)
-                .Include(booking => booking.Flight)
-                .ThenInclude(flight => flight.Departure)
-                .ThenInclude(departure => departure.Airport)
-                .Include(booking => booking.Flight)
-                .ThenInclude(flight => flight.Destination)
-                .ThenInclude(destination => destination.Airport)
+                .Include(booking => booking.Passengers)
+                .Include(booking => booking.Seats)
+                .ThenInclude(seat => seat.Flight)
                 .SingleOrDefaultAsync(b => b.Id == id);
         }
 

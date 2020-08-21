@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using BookingApi.Dtos.FlightDto;
 using BookingApi.Dtos.PassengerDto;
+using BookingApi.Dtos.SeatDto;
 using BookingApi.Models;
 
 namespace BookingApi.Dtos.BookingDto
@@ -19,11 +21,10 @@ namespace BookingApi.Dtos.BookingDto
         [Column(TypeName = "decimal(18,4)")]
         public decimal Cost { get; set; }
         public string Status { get; set; }
-        public int FlightId { get; set; }
         public int PassengerId { get; set; }
 
-        public PassengerReadDto Passenger { get; set; }
-        public FlightReadDto Flight { get; set; }
+        public IEnumerable<PassengerReadDto> Passengers { get; set; }
+        public IEnumerable<SeatReadDto> Seat { get; set; }
 
     }
 }

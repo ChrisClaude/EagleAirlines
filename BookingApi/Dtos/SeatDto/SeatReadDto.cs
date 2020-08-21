@@ -9,8 +9,7 @@ namespace BookingApi.Dtos.SeatDto
         public int Id { get; set; }
         public string SeatNum { get; set; }
         public Cabin Cabin { get; set; }
+        public int? BookingId { get; set; }
         public int FlightId { get; set; }
-
-        //public FlightReadDto Flight { get; set; }
     }
 }

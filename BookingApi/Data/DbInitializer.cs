@@ -330,7 +330,7 @@ namespace BookingApi.Data
                     Email = "christ.tchambila@eaglestack.com",
                     Name = "Chris",
                     Surname = "De-Tchambila",
-                    DateOfBirth = new DateTime(2000, 2, 16),
+                    Age = 20,
                     Title =  "Mr.",
                     PassportNumber = "OA0158375",
                     Citizenship = "South African"
@@ -340,7 +340,7 @@ namespace BookingApi.Data
                     Email = "melody.tchambila@eaglestack.com",
                     Name = "Melody",
                     Surname = "Tchambila",
-                    DateOfBirth = new DateTime(2002, 8, 25),
+                    Age = 18,
                     Title =  "Miss",
                     PassportNumber = "OA2196375",
                     Citizenship = "South African"
@@ -350,7 +350,7 @@ namespace BookingApi.Data
                     Email = "hadassah.leya@eaglestack.com",
                     Name = "Hadassah",
                     Surname = "Leya",
-                    DateOfBirth = new DateTime(1998, 4, 4),
+                    Age = 22,
                     Title =  "Mrs.",
                     PassportNumber = "DA119ZA75",
                     Citizenship = "Israeli"
@@ -360,7 +360,7 @@ namespace BookingApi.Data
                     Email = "david.thom@eaglestack.com",
                     Name = "David",
                     Surname = "Thom",
-                    DateOfBirth = new DateTime(1997, 4, 30),
+                    Age = 23,
                     Title =  "Mr.",
                     PassportNumber = "ZA2158375",
                     Citizenship = "South African"
@@ -370,7 +370,7 @@ namespace BookingApi.Data
                     Email = "rebeca.macron@eaglestack.com",
                     Name = "Rebeca",
                     Surname = "Joy",
-                    DateOfBirth = new DateTime(2002, 8, 25),
+                    Age = 18,
                     Title =  "Miss",
                     PassportNumber = "FR2996345",
                     Citizenship = "French"
@@ -380,7 +380,7 @@ namespace BookingApi.Data
                     Email = "kim.leea@eaglestack.com",
                     Name = "Kim",
                     Surname = "Lee",
-                    DateOfBirth = new DateTime(1995, 8, 4),
+                    Age = 25,
                     Title =  "Mrs.",
                     PassportNumber = "US139FA75",
                     Citizenship = "American"
