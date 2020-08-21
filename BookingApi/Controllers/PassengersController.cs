@@ -7,7 +7,9 @@ using BookingApi.Data.Util;
 using BookingApi.Dtos.PassengerDto;
 using BookingApi.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
 namespace BookingApi.Controllers
@@ -33,7 +35,7 @@ namespace BookingApi.Controllers
         ///    search for searching passengers, sort for sorting, pageIndex for page number of the paged data, pageSize to specify
         ///     the number of returned elements
         /// </param>
-        /// <returns>An array of airport objects</returns>
+        /// <returns>An array of passenger objects</returns>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<Passenger>>> GetAllPassengers([FromQuery] PassengerQueryParameters parameters)
@@ -55,32 +57,53 @@ namespace BookingApi.Controllers
             return Ok(_mapper.Map<IEnumerable<PassengerReadDto>>(passengers));
         }
         
-        // PUT: api/Passengers/5
+        // GET: api/Passengers/5
         /// <summary>
-        /// Updates an airport object
+        /// Get a passenger by its id
         /// </summary>
-        /// <param name="id">the id of the airport to update</param>
-        /// <param name="airportUpdateDto">the updated object</param>
-        [HttpPut("{id:int}")]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        /// <param name="id">the id of the passenger requested</param>
+        /// <returns>An passenger object</returns>
+        [HttpGet("{id:int}", Name = "GetPassenger")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task<IActionResult> UpdatePassengerAsync(int id, PassengerUpdateDto airportUpdateDto)
+        public async Task<ActionResult<Passenger>> GetPassengerAsync(int id)
         {
-            if (id != airportUpdateDto.ID)
-            {
-                return BadRequest();
-            }
+            var passenger = await _repository.GetByIdAsync(id);
 
-            var airportFromRepo = await _repository.GetByIdAsync(id);
-
-            if (airportFromRepo == null)
+            if (passenger == null)
             {
                 return NotFound();
             }
 
-            _mapper.Map(airportUpdateDto, airportFromRepo);
-            //_repository.UpdatePassenger(airportFromRepo.Value); // this is achieved by the previous code
+            return Ok(_mapper.Map<PassengerReadDto>(passenger));
+        }
+        
+        // PUT: api/Passengers/5
+        /// <summary>
+        /// Updates an passenger object
+        /// </summary>
+        /// <param name="id">the id of the passenger to update</param>
+        /// <param name="passengerUpdateDto">the updated object</param>
+        [HttpPut("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public async Task<IActionResult> UpdatePassengerAsync(int id, PassengerUpdateDto passengerUpdateDto)
+        {
+            if (id != passengerUpdateDto.Id)
+            {
+                return BadRequest();
+            }
+
+            var passengerFromRepo = await _repository.GetByIdAsync(id);
+
+            if (passengerFromRepo == null)
+            {
+                return NotFound();
+            }
+
+            _mapper.Map(passengerUpdateDto, passengerFromRepo);
+            //_repository.UpdatePassenger(passengerFromRepo.Value); // this is achieved by the previous code
 
             try
             {
@@ -99,32 +122,32 @@ namespace BookingApi.Controllers
 
         // PATCH api/commands/{id}
         /// <summary>
-        /// partially updates an airport
+        /// partially updates an passenger
         /// </summary>
-        /// <param name="id">the id of the airport to update</param>
+        /// <param name="id">the id of the passenger to update</param>
         /// <param name="patchDoc">the json object with the specific attribute to be updated</param>
         [HttpPatch("{id:int}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<ActionResult> PartialPassengerUpdateAsync(int id, JsonPatchDocument<PassengerUpdateDto> patchDoc)
         {
-            var airportModelFromRepo = await _repository.GetByIdAsync(id);
-            if (airportModelFromRepo == null)
+            var passengerModelFromRepo = await _repository.GetByIdAsync(id);
+            if (passengerModelFromRepo == null)
             {
                 return NotFound();
             }
 
-            var airportToPatch = _mapper.Map<PassengerUpdateDto>(airportModelFromRepo);
+            var passengerToPatch = _mapper.Map<PassengerUpdateDto>(passengerModelFromRepo);
 
-            patchDoc.ApplyTo(airportToPatch, ModelState);
+            patchDoc.ApplyTo(passengerToPatch, ModelState);
 
-            if (!TryValidateModel(airportToPatch))
+            if (!TryValidateModel(passengerToPatch))
             {
                 return ValidationProblem(ModelState);
             }
 
-            _mapper.Map(airportToPatch, airportModelFromRepo);
-            _repository.Update(airportModelFromRepo);
+            _mapper.Map(passengerToPatch, passengerModelFromRepo);
+            _repository.Update(passengerModelFromRepo);
 
             await _repository.SaveChangesAsync();
 
@@ -133,26 +156,26 @@ namespace BookingApi.Controllers
         
         // POST: api/Passengers
         /// <summary>
-        /// Creates an airport 
+        /// Creates an passenger 
         /// </summary>
-        /// <param name="airportCreateDto">The airport object to create.</param>
+        /// <param name="passengerCreateDto">The passenger object to create.</param>
         /// <returns></returns>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<ActionResult<Passenger>> CreatePassengerAsync(PassengerCreateDto airportCreateDto)
+        public async Task<ActionResult<Passenger>> CreatePassengerAsync(PassengerCreateDto passengerCreateDto)
         {
-            var airportModel = _mapper.Map<Passenger>(airportCreateDto);
-            await _repository.CreateAsync(airportModel);
+            var passengerModel = _mapper.Map<Passenger>(passengerCreateDto);
+            await _repository.CreateAsync(passengerModel);
             await _repository.SaveChangesAsync();
 
-            var airportReadDto = _mapper.Map<PassengerReadDto>(airportModel);
+            var passengerReadDto = _mapper.Map<PassengerReadDto>(passengerModel);
 
-            return CreatedAtRoute(nameof(GetPassengerAsync), new { Id = airportReadDto.ID }, airportReadDto);
+            return CreatedAtRoute(nameof(GetPassengerAsync), new { Id = passengerReadDto.Id }, passengerReadDto);
         }
         
         // DELETE: api/Passengers/5
         /// <summary>
-        /// Deletes an airport
+        /// Deletes an passenger
         /// </summary>
         /// <param name="id">id of the object to be deleted</param>
         /// <returns>the deleted object</returns>
@@ -161,17 +184,17 @@ namespace BookingApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Passenger>> DeletePassengerAsync(int id)
         {
-            var airport = await _repository.GetByIdAsync(id);
-            if (airport == null)
+            var passenger = await _repository.GetByIdAsync(id);
+            if (passenger == null)
             {
                 return NotFound();
             }
 
-            _repository.Delete(airport);
+            _repository.Delete(passenger);
 
             await _repository.SaveChangesAsync();
 
-            return Ok(_mapper.Map<PassengerReadDto>(airport));
+            return Ok(_mapper.Map<PassengerReadDto>(passenger));
         }
 
 
