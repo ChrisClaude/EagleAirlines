@@ -1,6 +1,8 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using BookingApi.Dtos.FlightDto;
+using BookingApi.Dtos.PassengerDto;
 using BookingApi.Models;
 
 namespace BookingApi.Dtos.BookingDto
@@ -20,8 +22,8 @@ namespace BookingApi.Dtos.BookingDto
         public int FlightId { get; set; }
         public int PassengerId { get; set; }
 
-        public Passenger PassengerReadDto { get; set; }
-        public Flight FlightReadDto { get; set; }
+        public PassengerReadDto Passenger { get; set; }
+        public FlightReadDto Flight { get; set; }
 
     }
 }
