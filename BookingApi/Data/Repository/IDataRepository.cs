@@ -8,7 +8,7 @@ namespace BookingApi.Data.Repository
 {
     public interface IDataRepository<T>
     {
-        Task<IEnumerable<T>> GetAllAsync(QueryStringParameters queryStringParameterses);
+        Task<IEnumerable<T>> GetAllAsync(QueryStringParameters queryStringParameters);
         //Task<IEnumerable<T>> SearchAsync(string searchString);
         Task<T> GetByIdAsync(int id);
         Task CreateAsync(T t);

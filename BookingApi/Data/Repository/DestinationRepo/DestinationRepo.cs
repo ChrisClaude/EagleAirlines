@@ -17,14 +17,14 @@ namespace BookingApi.Data.Repository.DestinationRepo
 
         private BookingContext _context { get; }
 
-        public async Task<IEnumerable<Destination>> GetAllAsync(QueryStringParameters parameters)
+        public async Task<IEnumerable<Destination>> GetAllAsync(QueryStringParameters queryStringParameters)
         {
             IQueryable<Destination> destinationsIq;
 
             // search
-            if (!string.IsNullOrEmpty(parameters.SearchString))
+            if (!string.IsNullOrEmpty(queryStringParameters.SearchString))
             {
-                var searchDate = DateTime.Parse(parameters.SearchString);
+                var searchDate = DateTime.Parse(queryStringParameters.SearchString);
                 destinationsIq = _context.Destinations.Where(d => d.Date.Equals(searchDate));
             }
             else
@@ -36,14 +36,14 @@ namespace BookingApi.Data.Repository.DestinationRepo
 
             // page
             IEnumerable<Destination> destinations =
-                await PaginatedList<Destination>.CreateAsync(destinationsIq, parameters.PageNumber,
-                    parameters.PageSize);
+                await PaginatedList<Destination>.CreateAsync(destinationsIq, queryStringParameters.PageNumber,
+                    queryStringParameters.PageSize);
 
             // sort - string not set
-            if (string.IsNullOrEmpty(parameters.SortString)) return destinations;
+            if (string.IsNullOrEmpty(queryStringParameters.SortString)) return destinations;
 
             // sort
-            var sort = parameters.SortString;
+            var sort = queryStringParameters.SortString;
 
             var count = ((PaginatedList<Destination>) destinations).ItemCount;
             var index = ((PaginatedList<Destination>) destinations).PageIndex;

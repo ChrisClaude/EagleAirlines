@@ -1,16 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace BookingApi.Models
+namespace BookingApi.Dtos.PassengerDto
 {
-    public class Passenger
+    public class PassengerUpdateDto
     {
-        public int Id { get; set; }
         [DataType(DataType.EmailAddress)]
-
         [Required]
         [StringLength(70, MinimumLength = 4)]
         public string Email { get; set; }
@@ -35,5 +30,6 @@ namespace BookingApi.Models
         [Required]
         [StringLength(70, MinimumLength = 4)]
         public string Citizenship { get; set; }
+
     }
 }

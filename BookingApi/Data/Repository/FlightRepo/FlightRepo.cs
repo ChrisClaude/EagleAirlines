@@ -17,14 +17,14 @@ namespace BookingApi.Data.Repository.FlightRepo
 
         private BookingContext _context { get; }
 
-        public async Task<IEnumerable<Flight>> GetAllAsync(QueryStringParameters parameters)
+        public async Task<IEnumerable<Flight>> GetAllAsync(QueryStringParameters queryStringParameters)
         {
             IQueryable<Flight> flightsIq;
 
             // search
-            if (!string.IsNullOrEmpty(parameters.SearchString))
+            if (!string.IsNullOrEmpty(queryStringParameters.SearchString))
             {
-                var search = parameters.SearchString;
+                var search = queryStringParameters.SearchString;
                 flightsIq = _context.Flights.Where(f => f.Name.ToUpper().Contains(search.ToUpper())
                                                         || f.Description.ToUpper().Contains(search.ToUpper()));
             }
@@ -41,14 +41,14 @@ namespace BookingApi.Data.Repository.FlightRepo
 
             // page
             IEnumerable<Flight> flights =
-                await PaginatedList<Flight>.CreateAsync(flightsIq, parameters.PageNumber, parameters.PageSize);
+                await PaginatedList<Flight>.CreateAsync(flightsIq, queryStringParameters.PageNumber, queryStringParameters.PageSize);
 
 
             // sort string not set
-            if (string.IsNullOrEmpty(parameters.SortString)) return flights;
+            if (string.IsNullOrEmpty(queryStringParameters.SortString)) return flights;
             
             // sort
-            var sort = parameters.SortString;
+            var sort = queryStringParameters.SortString;
 
             var count = ((PaginatedList<Flight>) flights).ItemCount;
             var index = ((PaginatedList<Flight>) flights).PageIndex;

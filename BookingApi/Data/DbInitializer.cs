@@ -25,6 +25,52 @@ namespace BookingApi.Data
 
             // Initialize seats
             InitializeSeats(context);
+            
+            // Initialize passengers
+            InitializePassengers(context);
+        }
+
+        private static void InitializePassengers(BookingContext context)
+        {
+            if (context.Passengers.Any()) return;
+            var passengers = new List<Passenger>()
+            {
+                new Passenger()
+                {
+                    Email = "christ.tchambila@eaglestack.com",
+                    Name = "Chris",
+                    Surname = "De-Tchambila",
+                    DateOfBirth = new DateTime(2000, 2, 16),
+                    Title =  "Mr.",
+                    PassportNumber = "OA0158375",
+                    Citizenship = "South African"
+                },
+                new Passenger()
+                {
+                    Email = "melody.tchambila@eaglestack.com",
+                    Name = "Melody",
+                    Surname = "Tchambila",
+                    DateOfBirth = new DateTime(2002, 8, 25),
+                    Title =  "Miss",
+                    PassportNumber = "OA2196375",
+                    Citizenship = "South African"
+                },
+                new Passenger()
+                {
+                    Email = "hadassah.leya@eaglestack.com",
+                    Name = "Hadassah",
+                    Surname = "Leya",
+                    DateOfBirth = new DateTime(1998, 4, 4),
+                    Title =  "Mrs.",
+                    PassportNumber = "DA119ZA75",
+                    Citizenship = "Israeli"
+                }
+            };
+            
+            context.Passengers.AddRange(passengers);
+            context.SaveChanges();
+
+            Console.WriteLine("Passengers data seeded");
         }
 
         private static void InitializeSeats(BookingContext context)

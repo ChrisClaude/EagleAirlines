@@ -53,6 +53,7 @@ namespace BookingApi.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Email = table.Column<string>(maxLength: 70, nullable: false),
+                    Name = table.Column<string>(maxLength: 70, nullable: false),
                     Surname = table.Column<string>(maxLength: 70, nullable: false),
                     DateOfBirth = table.Column<DateTime>(nullable: false),
                     Title = table.Column<string>(maxLength: 70, nullable: false),
@@ -143,9 +144,8 @@ namespace BookingApi.Migrations
                 name: "Booking",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Date = table.Column<DateTime>(nullable: false),
+                    Id = table.Column<Guid>(nullable: false),
+                    TimeStamp = table.Column<DateTime>(nullable: false),
                     Cost = table.Column<decimal>(type: "decimal(18,4)", nullable: false),
                     Status = table.Column<string>(nullable: true),
                     FlightId = table.Column<int>(nullable: false),
