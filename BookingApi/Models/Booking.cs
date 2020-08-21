@@ -20,7 +20,7 @@ namespace BookingApi.Models
         [Column(TypeName = "decimal(18,4)")]
         public decimal Cost { get; set; }
         [Required]
-        public string Status { get; set; }
+        public string Status { get; set; } // TODO: Status constants should be added { Confirmed, Not Confirmed }
         public int FlightId { get; set; }
         public int PassengerId { get; set; }
 

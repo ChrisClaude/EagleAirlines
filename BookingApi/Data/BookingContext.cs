@@ -34,6 +34,10 @@ namespace BookingApi.Data
             modelBuilder.Entity<Seat>()
                 .HasIndex(s => new {s.SeatNum, FlightID = s.FlightId})
                 .IsUnique();
+
+            modelBuilder.Entity<Booking>()
+                .HasIndex(b => new {b.PassengerId})
+                .IsUnique();
         }
     }
 }

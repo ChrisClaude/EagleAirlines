@@ -62,7 +62,7 @@ namespace BookingApi.Controllers
         /// </summary>
         /// <param name="id">the id of the passenger requested</param>
         /// <returns>An passenger object</returns>
-        [HttpGet("{id:int}", Name = "GetPassenger")]
+        [HttpGet("{id:int}", Name = "GetPassengerAsync")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Passenger>> GetPassengerAsync(int id)

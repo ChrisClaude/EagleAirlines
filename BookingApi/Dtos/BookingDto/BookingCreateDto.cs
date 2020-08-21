@@ -7,9 +7,6 @@ namespace BookingApi.Dtos.BookingDto
 {
     public class BookingCreateDto
     {
-        [DataType(DataType.Date)]
-        public DateTime TimeStamp { get; set; } = DateTime.UtcNow;
-
         [DataType(DataType.Currency)]
         [Column(TypeName = "decimal(18,4)")]
         public decimal Cost { get; set; }

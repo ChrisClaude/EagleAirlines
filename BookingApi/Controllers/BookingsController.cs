@@ -63,7 +63,7 @@ namespace BookingApi.Controllers
         /// </summary>
         /// <param name="id">the id of the booking requested</param>
         /// <returns>An booking object</returns>
-        [HttpGet("{id:int}", Name = "GetBooking")]
+        [HttpGet("{id:guid}", Name = "GetBookingAsync")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Booking>> GetBookingAsync(Guid id)
@@ -179,7 +179,7 @@ namespace BookingApi.Controllers
         /// </summary>
         /// <param name="id">id of the object to be deleted</param>
         /// <returns>the deleted object</returns>
-        [HttpDelete("{id:string}")]
+        [HttpDelete("{id:guid}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Booking>> DeleteBookingAsync(Guid id)

@@ -20,8 +20,8 @@ namespace BookingApi.Dtos.BookingDto
         public int FlightId { get; set; }
         public int PassengerId { get; set; }
 
-        public Passenger Passenger { get; set; }
-        public Flight Flight { get; set; }
+        public Passenger PassengerReadDto { get; set; }
+        public Flight FlightReadDto { get; set; }
 
     }
 }

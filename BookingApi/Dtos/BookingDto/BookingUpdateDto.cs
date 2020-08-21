@@ -7,8 +7,6 @@ namespace BookingApi.Dtos.BookingDto
     public class BookingUpdateDto
     {
         public Guid Id { get; set; }
-        [DataType(DataType.Date)]
-        public DateTime TimeStamp { get; set; } = DateTime.UtcNow;
 
         [DataType(DataType.Currency)]
         [Column(TypeName = "decimal(18,4)")]
