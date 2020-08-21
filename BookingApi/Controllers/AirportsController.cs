@@ -89,7 +89,7 @@ namespace BookingApi.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> UpdateAirportAsync(int id, AirportUpdateDto airportUpdateDto)
         {
-            if (id != airportUpdateDto.ID)
+            if (id != airportUpdateDto.Id)
             {
                 return BadRequest();
             }
@@ -169,7 +169,7 @@ namespace BookingApi.Controllers
 
             var airportReadDto = _mapper.Map<AirportReadDto>(airportModel);
 
-            return CreatedAtRoute(nameof(GetAirportAsync), new { Id = airportReadDto.ID }, airportReadDto);
+            return CreatedAtRoute(nameof(GetAirportAsync), new { Id = airportReadDto.Id }, airportReadDto);
         }
         
         // DELETE: api/Airports/5

@@ -5,6 +5,8 @@ namespace BookingApi.Dtos.PassengerDto
 {
     public class PassengerUpdateDto
     {
+        public int Id { get; set; }
+        
         [DataType(DataType.EmailAddress)]
         [Required]
         [StringLength(70, MinimumLength = 4)]

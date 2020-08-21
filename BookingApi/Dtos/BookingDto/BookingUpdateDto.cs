@@ -6,6 +6,7 @@ namespace BookingApi.Dtos.BookingDto
 {
     public class BookingUpdateDto
     {
+        public Guid Id { get; set; }
         [DataType(DataType.Date)]
         public DateTime TimeStamp { get; set; } = DateTime.UtcNow;
 

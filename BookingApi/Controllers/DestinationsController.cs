@@ -87,7 +87,7 @@ namespace BookingApi.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> UpdateDestinationAsync(int id, DestinationUpdateDto destinationUpdateDto)
         {
-            if (id != destinationUpdateDto.ID)
+            if (id != destinationUpdateDto.Id)
             {
                 return BadRequest();
             }

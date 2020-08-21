@@ -6,7 +6,7 @@ namespace BookingApi.Dtos.FlightDto
 {
     public class FlightReadDto
     {
-        public int ID { get; set; }
+        public int Id { get; set; }
         public double Miles 
         { 
             get 

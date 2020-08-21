@@ -4,7 +4,7 @@ namespace BookingApi.Dtos.AirportDto
 {
     public class AirportUpdateDto
     {
-        public int ID { get; set; }
+        public int Id { get; set; }
 
         [Required]
         [StringLength(150, MinimumLength = 4)]

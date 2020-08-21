@@ -87,7 +87,7 @@ namespace BookingApi.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> UpdateFlightAsync(int id, FlightUpdateDto flightUpdateDto)
         {
-            if (id != flightUpdateDto.ID)
+            if (id != flightUpdateDto.Id)
             {
                 return BadRequest();
             }
@@ -167,7 +167,7 @@ namespace BookingApi.Controllers
 
             var flightReadDto = _mapper.Map<FlightReadDto>(flightModel);
 
-            return CreatedAtRoute(nameof(GetFlightAsync), new { Id = flightReadDto.ID }, flightReadDto);
+            return CreatedAtRoute(nameof(GetFlightAsync), new { Id = flightReadDto.Id }, flightReadDto);
         }
         
         // DELETE: api/Flights/5
