@@ -25,8 +25,8 @@ namespace BookingApi.Dtos.FlightDto
         public string Name { get; set; }
         public string Description { get; set; }
 
-        public DepartureReadDto Departure { get; set; }
-        public DestinationReadDto Destination { get; set; }
+        public FlightDepartureReadDto Departure { get; set; }
+        public FlightDestinationReadDto Destination { get; set; }
 
     }
 }

@@ -10,6 +10,8 @@ namespace BookingApi.Profiles
     {
         public DestinationProfile()
         {
+            CreateMap<Destination, FlightDestinationReadDto>();
+            
             CreateMap<Destination, DestinationReadDto>();
             CreateMap<DestinationCreateDto, Destination>();
             CreateMap<DestinationUpdateDto, Destination>();
