@@ -88,7 +88,7 @@ namespace BookingApi.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> UpdateDepartureAsync(int id, DepartureUpdateDto departureUpdateDto)
         {
-            if (id != departureUpdateDto.ID)
+            if (id != departureUpdateDto.Id)
             {
                 return BadRequest();
             }
@@ -182,7 +182,7 @@ namespace BookingApi.Controllers
             departureModel = await _repository.GetByIdAsync(departureModel.Id);
             var departureReadDto = _mapper.Map<DepartureReadDto>(departureModel);
 
-            return CreatedAtRoute(nameof(GetDepartureAsync), new {Id = departureReadDto.ID}, departureReadDto);
+            return CreatedAtRoute(nameof(GetDepartureAsync), new {Id = departureReadDto.Id}, departureReadDto);
         }
 
         // DELETE: api/Departures/5

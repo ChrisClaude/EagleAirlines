@@ -180,7 +180,7 @@ namespace BookingApi.Controllers
             destinationModel = await _repository.GetByIdAsync(destinationModel.Id);
             var destinationReadDto = _mapper.Map<DestinationReadDto>(destinationModel);
 
-            return CreatedAtRoute(nameof(GetDestinationAsync), new { Id = destinationReadDto.ID }, destinationReadDto);
+            return CreatedAtRoute(nameof(GetDestinationAsync), new { Id = destinationReadDto.Id }, destinationReadDto);
         }
         
         // DELETE: api/Destinations/5
