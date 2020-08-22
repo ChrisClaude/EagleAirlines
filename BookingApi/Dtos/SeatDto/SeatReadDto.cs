@@ -1,5 +1,4 @@
-﻿using System;
-
+﻿
 namespace BookingApi.Dtos.SeatDto
 {
     public class SeatReadDto

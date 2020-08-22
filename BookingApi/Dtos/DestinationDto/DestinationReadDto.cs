@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using BookingApi.Dtos.AirportDto;
-using BookingApi.Models;
 
 namespace BookingApi.Dtos.DestinationDto
 {

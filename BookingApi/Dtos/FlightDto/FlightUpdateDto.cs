@@ -1,6 +1,4 @@
-﻿using BookingApi.Models;
-
-namespace BookingApi.Dtos.FlightDto
+﻿namespace BookingApi.Dtos.FlightDto
 {
     public class FlightUpdateDto
     {

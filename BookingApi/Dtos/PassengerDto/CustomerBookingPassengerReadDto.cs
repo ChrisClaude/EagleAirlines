@@ -1,8 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using BookingApi.Dtos.SeatDto;
-
-namespace BookingApi.Dtos.PassengerDto
+﻿namespace BookingApi.Dtos.PassengerDto
 {
     public class CustomerBookingPassengerReadDto
     {

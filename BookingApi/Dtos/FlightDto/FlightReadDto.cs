@@ -1,6 +1,5 @@
 ﻿using BookingApi.Dtos.DepartureDto;
 using BookingApi.Dtos.DestinationDto;
-using BookingApi.Models;
 
 namespace BookingApi.Dtos.FlightDto
 {

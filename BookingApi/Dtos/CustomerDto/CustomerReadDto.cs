@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using BookingApi.Dtos.AirportDto;
+﻿using System.Collections.Generic;
 using BookingApi.Dtos.BookingDto;
-using BookingApi.Models;
 
 namespace BookingApi.Dtos.CustomerDto
 {
