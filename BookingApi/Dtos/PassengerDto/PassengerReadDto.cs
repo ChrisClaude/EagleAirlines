@@ -1,6 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using BookingApi.Dtos.SeatDto;
+﻿using BookingApi.Dtos.SeatDto;
 
 namespace BookingApi.Dtos.PassengerDto
 {
@@ -19,7 +17,6 @@ namespace BookingApi.Dtos.PassengerDto
         
         public string Citizenship { get; set; }
         public int BookingId { get; set; }
-        public int SeatId { get; set; }
 
         public SeatReadDto Seat { get; set; }
     }
