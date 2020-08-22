@@ -29,12 +29,14 @@ namespace BookingApi.Data.Repository.CustomerRepo
                 customersIq = _context.Customers
                     .Where(c => c.Name == search || c.Email == search)
                     .Include(customer => customer.Bookings)
+                    .ThenInclude(booking => booking.Passengers)
                     .AsNoTracking();
             }
             else
             {
                 customersIq = from c in _context.Customers
                         .Include(customer => customer.Bookings)
+                        .ThenInclude(booking => booking.Passengers)
                         .AsNoTracking()
                     select c;
             }
@@ -71,6 +73,7 @@ namespace BookingApi.Data.Repository.CustomerRepo
         {
             return await _context.Customers
                 .Include(customer => customer.Bookings)
+                .ThenInclude(booking => booking.Passengers)
                 .SingleOrDefaultAsync(b => b.Id == id);
         }
 

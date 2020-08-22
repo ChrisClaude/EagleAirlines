@@ -8,6 +8,8 @@ namespace BookingApi.Profiles
     {
         public PassengersProfile()
         {
+            CreateMap<Passenger, CustomerBookingPassengerReadDto>();
+            
             CreateMap<Passenger, PassengerReadDto>();
             CreateMap<PassengerCreateDto, Passenger>();
             CreateMap<PassengerUpdateDto, Passenger>();

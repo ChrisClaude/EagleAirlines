@@ -18,7 +18,6 @@ namespace BookingApi.Dtos.BookingDto
 
         public decimal Cost { get; set; }
         public string Status { get; set; }
-        public int PassengerId { get; set; }
         public int CustomerId { get; set; }
 
 
