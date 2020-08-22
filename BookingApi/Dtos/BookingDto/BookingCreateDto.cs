@@ -1,7 +1,5 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using BookingApi.Models;
 
 namespace BookingApi.Dtos.BookingDto
 {
@@ -12,5 +10,6 @@ namespace BookingApi.Dtos.BookingDto
         public decimal Cost { get; set; }
         [Required]
         public string Status { get; set; }
+        public int CustomerId { get; set; }
     }
 }

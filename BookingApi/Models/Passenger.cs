@@ -13,10 +13,6 @@ namespace BookingApi.Models
 
         [Required]
         [StringLength(70, MinimumLength = 4)]
-        public string Email { get; set; }
-
-        [Required]
-        [StringLength(70, MinimumLength = 4)]
         public string Name { get; set; }
         
         [Required]
@@ -37,7 +33,9 @@ namespace BookingApi.Models
         public string Citizenship { get; set; }
 
         public int BookingId { get; set; }
+        public int SeatId { get; set; }
         
         public Booking Booking { get; set; }
+        public Seat Seat { get; set; }
     }
 }

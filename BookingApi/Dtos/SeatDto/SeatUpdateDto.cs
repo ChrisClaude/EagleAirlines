@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-using BookingApi.Models;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace BookingApi.Dtos.SeatDto
 {
@@ -10,7 +10,6 @@ namespace BookingApi.Dtos.SeatDto
         [Range(0, 1)]
         public Cabin Cabin { get; set; }
 
-        public int? BookingId { get; set; }
         public int FlightId { get; set; }
     }
 }

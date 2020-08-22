@@ -63,10 +63,10 @@ namespace BookingApi.Controllers
         /// </summary>
         /// <param name="id">the id of the booking requested</param>
         /// <returns>An booking object</returns>
-        [HttpGet("{id:guid}", Name = "GetBookingAsync")]
+        [HttpGet("{id:int}", Name = "GetBookingAsync")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<Booking>> GetBookingAsync(Guid id)
+        public async Task<ActionResult<Booking>> GetBookingAsync(int id)
         {
             var booking = await _repository.GetByIdAsync(id);
 
@@ -84,11 +84,11 @@ namespace BookingApi.Controllers
         /// </summary>
         /// <param name="id">the id of the booking to update</param>
         /// <param name="bookingUpdateDto">the updated object</param>
-        [HttpPut("{id:guid}")]
+        [HttpPut("{id:int}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task<IActionResult> UpdateBookingAsync(Guid id, BookingUpdateDto bookingUpdateDto)
+        public async Task<IActionResult> UpdateBookingAsync(int id, BookingUpdateDto bookingUpdateDto)
         {
             if (id != bookingUpdateDto.Id)
             {
@@ -126,10 +126,10 @@ namespace BookingApi.Controllers
         /// </summary>
         /// <param name="id">the id of the booking to update</param>
         /// <param name="patchDoc">the json object with the specific attribute to be updated</param>
-        [HttpPatch("{id:guid}")]
+        [HttpPatch("{id:int}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task<ActionResult> PartialBookingUpdateAsync(Guid id, JsonPatchDocument<BookingUpdateDto> patchDoc)
+        public async Task<ActionResult> PartialBookingUpdateAsync(int id, JsonPatchDocument<BookingUpdateDto> patchDoc)
         {
             var bookingModelFromRepo = await _repository.GetByIdAsync(id);
             if (bookingModelFromRepo == null)
@@ -182,7 +182,7 @@ namespace BookingApi.Controllers
         [HttpDelete("{id:guid}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<Booking>> DeleteBookingAsync(Guid id)
+        public async Task<ActionResult<Booking>> DeleteBookingAsync(int id)
         {
             var booking = await _repository.GetByIdAsync(id);
             if (booking == null)

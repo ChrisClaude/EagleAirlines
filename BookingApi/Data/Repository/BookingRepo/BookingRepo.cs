@@ -32,7 +32,7 @@ namespace BookingApi.Data.Repository.BookingRepo
             {
                 bookingsIq = from b in _context.Bookings
                     .Include(booking => booking.Passengers)
-                    .Include(booking => booking.Seats)
+                    .ThenInclude(passenger => passenger.Seat)
                     .ThenInclude(seat => seat.Flight)
                     .AsNoTracking()
                     select b;
@@ -64,16 +64,12 @@ namespace BookingApi.Data.Repository.BookingRepo
             return PaginatedList<Booking>.ParsePaginatedList(bookings, count, index, size);
         }
 
-        public Task<Booking> GetByIdAsync(int id)
-        {
-            return null;
-        }
         
-        public async Task<Booking> GetByIdAsync(Guid id)
+        public async Task<Booking> GetByIdAsync(int id)
         {
             return await _context.Bookings
                 .Include(booking => booking.Passengers)
-                .Include(booking => booking.Seats)
+                .ThenInclude(passenger => passenger.Seat)
                 .ThenInclude(seat => seat.Flight)
                 .SingleOrDefaultAsync(b => b.Id == id);
         }

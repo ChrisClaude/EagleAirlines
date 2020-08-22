@@ -33,5 +33,6 @@ namespace BookingApi.Dtos.PassengerDto
         [StringLength(70, MinimumLength = 4)]
         public string Citizenship { get; set; }
         public int BookingId { get; set; }
+        public int SeatId { get; set; }
     }
 }

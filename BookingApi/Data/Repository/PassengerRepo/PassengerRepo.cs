@@ -28,8 +28,9 @@ namespace BookingApi.Data.Repository.PassengerRepo
                 passengersIq = _context.Passengers.Where(p => p.PassportNumber == search
                                                               || p.Citizenship == search
                                                               || p.Surname == search
-                                                              || p.Name == search
-                );
+                                                              || p.Name == search)
+                    .Include(passenger => passenger.Booking)
+                    .ThenInclude(booking => booking.Customer);
             }
             else
             {
@@ -59,8 +60,6 @@ namespace BookingApi.Data.Repository.PassengerRepo
                 "surname_desc" => passengers.OrderByDescending(p => p.Surname),
                 "passport" => passengers.OrderBy(p => p.PassportNumber),
                 "passport_desc" => passengers.OrderByDescending(p => p.PassportNumber),
-                "email" => passengers.OrderBy(p => p.Email),
-                "email_desc" => passengers.OrderByDescending(p => p.Email),
                 _ => passengers.OrderBy(p => p.Name)
             };
 

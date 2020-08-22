@@ -18,21 +18,14 @@ namespace BookingApi.Data
         public DbSet<Seat> Seats { get; set; }
         public DbSet<Booking> Bookings { get; set; }
         public DbSet<Passenger> Passengers { get; set; }
+        public DbSet<Customer> Customers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            
-            modelBuilder.Entity<Airport>().ToTable("Airport");
-            modelBuilder.Entity<Departure>().ToTable("Departure");
-            modelBuilder.Entity<Destination>().ToTable("Destination");
-            modelBuilder.Entity<Flight>().ToTable("Flight");
-            modelBuilder.Entity<Seat>().ToTable("Seat");
-            modelBuilder.Entity<Booking>().ToTable("Booking");
-            modelBuilder.Entity<Passenger>().ToTable("Passenger");
-            
+
             modelBuilder.Entity<Seat>()
-                .HasIndex(s => new {s.SeatNum, FlightID = s.FlightId})
+                .HasIndex(s => new {s.SeatNum, s.FlightId})
                 .IsUnique();
 
         }

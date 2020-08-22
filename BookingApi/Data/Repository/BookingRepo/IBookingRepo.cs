@@ -6,9 +6,6 @@ namespace BookingApi.Data.Repository.BookingRepo
 {
     public interface IBookingRepo : IDataRepository<Booking>
     {
-        /**
-         * This is an overloaded method that caters for Guid keys 
-         */
-        Task<Booking> GetByIdAsync(Guid id);
+        // Task<Booking> GetByIdAsync(Guid id);
     }
 }

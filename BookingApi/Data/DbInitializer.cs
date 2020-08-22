@@ -23,21 +23,46 @@ namespace BookingApi.Data
             // Initialize destinations
             InitializeDestinations(context);
 
-            // Initialize seats
-            InitializeSeats(context);
-            
-            // Initialize passengers
-            InitializePassengers(context);
+            // Initialize customers
+            InitializeCustomers(context);
             
             // Initialize bookings
-            // InitializeBookings(context);
+            InitializeBookings(context);
+            
+            // Initialize seats
+            InitializeSeats(context);
+
+            // Initialize passengers
+            InitializePassengers(context);
+        }
+
+        private static void InitializeCustomers(BookingContext context)
+        {
+            if (context.Customers.Any()) return;
+
+            var customers = CustomerList();
+            context.Customers.AddRange(customers);
+            context.SaveChanges();
+
+            Console.WriteLine("Customers data seeded");
+        }
+
+        private static void InitializeBookings(BookingContext context)
+        {
+            if (context.Bookings.Any()) return;
+
+            var bookings = BookingList();
+            context.Bookings.AddRange(bookings);
+            context.SaveChanges();
+
+            Console.WriteLine("Bookings data seeded");
         }
 
         private static void InitializePassengers(BookingContext context)
         {
             if (context.Passengers.Any()) return;
+
             var passengers = PassengerList();
-            
             context.Passengers.AddRange(passengers);
             context.SaveChanges();
 
@@ -48,129 +73,7 @@ namespace BookingApi.Data
         {
             if (context.Seats.Any()) return;
 
-            var seats = new List<Seat>()
-            {
-                new Seat()
-                {
-                    SeatNum = "1A",
-                    Cabin = "Bus",
-                    FlightId = 1
-                },
-                new Seat()
-                {
-                    SeatNum = "2A",
-                    Cabin = "Bus",
-                    FlightId = 1
-                },
-                new Seat()
-                {
-                    SeatNum = "3A",
-                    Cabin = "Bus",
-                    FlightId = 1
-                },
-                new Seat()
-                {
-                    SeatNum = "4B",
-                    Cabin = "Bus",
-                    FlightId = 1
-                },
-                new Seat()
-                {
-                    SeatNum = "5B",
-                    Cabin = "Bus",
-                    FlightId = 1
-                },
-                new Seat()
-                {
-                    SeatNum = "10A",
-                    Cabin = "Eco",
-                    FlightId = 1
-                },
-                new Seat()
-                {
-                    SeatNum = "21C",
-                    Cabin = "Eco",
-                    FlightId = 1
-                },
-                new Seat()
-                {
-                    SeatNum = "21D",
-                    Cabin = "Eco",
-                    FlightId = 1
-                },
-                new Seat()
-                {
-                    SeatNum = "11B",
-                    Cabin = "Eco",
-                    FlightId = 1
-                },
-                new Seat()
-                {
-                    SeatNum = "25B",
-                    Cabin = "Eco",
-                    FlightId = 1
-                },
-                new Seat()
-                {
-                    SeatNum = "1A",
-                    Cabin = "Bus",
-                    FlightId = 3
-                },
-                new Seat()
-                {
-                    SeatNum = "2A",
-                    Cabin = "Bus",
-                    FlightId = 3
-                },
-                new Seat()
-                {
-                    SeatNum = "3A",
-                    Cabin = "Bus",
-                    FlightId = 2
-                },
-                new Seat()
-                {
-                    SeatNum = "4B",
-                    Cabin = "Bus",
-                    FlightId = 3
-                },
-                new Seat()
-                {
-                    SeatNum = "5B",
-                    Cabin = "Bus",
-                    FlightId = 2
-                },
-                new Seat()
-                {
-                    SeatNum = "10A",
-                    Cabin = "Eco",
-                    FlightId = 3
-                },
-                new Seat()
-                {
-                    SeatNum = "21C",
-                    Cabin = "Eco",
-                    FlightId = 2
-                },
-                new Seat()
-                {
-                    SeatNum = "21D",
-                    Cabin = "Eco",
-                    FlightId = 2
-                },
-                new Seat()
-                {
-                    SeatNum = "11B",
-                    Cabin = "Eco",
-                    FlightId = 3
-                },
-                new Seat()
-                {
-                    SeatNum = "25B",
-                    Cabin = "Eco",
-                    FlightId = 2
-                }
-            };
+            var seats = SeatsList();
 
             context.Seats.AddRange(seats);
             context.SaveChanges();
@@ -290,103 +193,439 @@ namespace BookingApi.Data
             Console.WriteLine("Read file\n");
 
             return (from item in jArray
-                    let name = ((string)item["name"]).Trim()
-                    let city = ((string)item["city"]).Trim()
-                    let country = ((string)item["country"]).Trim()
-                    let iata = ((string)item["IATA"]).Trim()
-                    let iciao = ((string)item["ICIAO"]).Trim()
-                    let latitude = ((string)item["latitude"]).Trim()
-                    let longitude = ((string)item["longitude"]).Trim()
-                    let altitude = ((string)item["altitude"]).Trim()
-                    let timezone = ((string)item["timezone"]).Trim()
-                    let dst = ((string)item["dst"]).Trim()
-                    let tz = ((string)item["tz"]).Trim()
-                    let stationType = ((string)item["station_type"]).Trim()
-                    let source = ((string)item["source"]).Trim()
-                    select new Airport
-                    {
-                        Name = name,
-                        City = city,
-                        Country = country,
-                        Iata = iata,
-                        Iciao = iciao,
-                        Latitude = latitude,
-                        Longitude = longitude,
-                        Altitude = altitude,
-                        Timezone = timezone,
-                        Dst = dst,
-                        Tz = tz,
-                        StationType = stationType,
-                        Source = source
-                    }).ToList();
+                let name = ((string) item["name"]).Trim()
+                let city = ((string) item["city"]).Trim()
+                let country = ((string) item["country"]).Trim()
+                let iata = ((string) item["IATA"]).Trim()
+                let iciao = ((string) item["ICIAO"]).Trim()
+                let latitude = ((string) item["latitude"]).Trim()
+                let longitude = ((string) item["longitude"]).Trim()
+                let altitude = ((string) item["altitude"]).Trim()
+                let timezone = ((string) item["timezone"]).Trim()
+                let dst = ((string) item["dst"]).Trim()
+                let tz = ((string) item["tz"]).Trim()
+                let stationType = ((string) item["station_type"]).Trim()
+                let source = ((string) item["source"]).Trim()
+                select new Airport
+                {
+                    Name = name,
+                    City = city,
+                    Country = country,
+                    Iata = iata,
+                    Iciao = iciao,
+                    Latitude = latitude,
+                    Longitude = longitude,
+                    Altitude = altitude,
+                    Timezone = timezone,
+                    Dst = dst,
+                    Tz = tz,
+                    StationType = stationType,
+                    Source = source
+                }).ToList();
         }
-        
-        
-        private static IEnumerable<Passenger> PassengerList() {
+
+        private static IEnumerable<Passenger> PassengerList()
+        {
             return new List<Passenger>()
             {
                 new Passenger()
                 {
-                    Email = "christ.tchambila@eaglestack.com",
                     Name = "Chris",
                     Surname = "De-Tchambila",
                     Age = 20,
-                    Title =  "Mr.",
+                    Title = "Mr.",
                     PassportNumber = "OA0158375",
-                    Citizenship = "South African"
+                    Citizenship = "South African",
+                    BookingId = 1,
+                    SeatId = 1
                 },
                 new Passenger()
                 {
-                    Email = "melody.tchambila@eaglestack.com",
                     Name = "Melody",
                     Surname = "Tchambila",
                     Age = 18,
-                    Title =  "Miss",
+                    Title = "Miss",
                     PassportNumber = "OA2196375",
-                    Citizenship = "South African"
+                    Citizenship = "South African",
+                    BookingId = 1,
+                    SeatId = 2
                 },
                 new Passenger()
                 {
-                    Email = "hadassah.leya@eaglestack.com",
-                    Name = "Hadassah",
-                    Surname = "Leya",
+                    Name = "Mari",
+                    Surname = "Ahskelon",
                     Age = 22,
-                    Title =  "Mrs.",
-                    PassportNumber = "DA119ZA75",
-                    Citizenship = "Israeli"
+                    Title = "Miss",
+                    PassportNumber = "ISR119ZA75",
+                    Citizenship = "Israeli",
+                    BookingId = 2,
+                    SeatId = 3
                 },
                 new Passenger()
                 {
-                    Email = "david.thom@eaglestack.com",
-                    Name = "David",
-                    Surname = "Thom",
-                    Age = 23,
-                    Title =  "Mr.",
-                    PassportNumber = "ZA2158375",
-                    Citizenship = "South African"
+                    Name = "Cameron",
+                    Surname = "Mosterat",
+                    Age = 28,
+                    Title = "Mr.",
+                    PassportNumber = "AUS2158375",
+                    Citizenship = "Australian",
+                    BookingId = 3,
+                    SeatId = 4
                 },
                 new Passenger()
                 {
-                    Email = "rebeca.macron@eaglestack.com",
-                    Name = "Rebeca",
-                    Surname = "Joy",
-                    Age = 18,
-                    Title =  "Miss",
-                    PassportNumber = "FR2996345",
-                    Citizenship = "French"
+                    Name = "Ashanti",
+                    Surname = "Sana",
+                    Age = 17,
+                    Title = "Miss",
+                    PassportNumber = "KEN2996345",
+                    Citizenship = "Kenyan",
+                    BookingId = 3,
+                    SeatId = 5
                 },
                 new Passenger()
                 {
-                    Email = "kim.leea@eaglestack.com",
-                    Name = "Kim",
-                    Surname = "Lee",
+                    Name = "Kimberly",
+                    Surname = "Asheklon",
                     Age = 25,
-                    Title =  "Mrs.",
-                    PassportNumber = "US139FA75",
-                    Citizenship = "American"
+                    Title = "Mrs.",
+                    PassportNumber = "ISR139FA75",
+                    Citizenship = "Israeli",
+                    BookingId = 3,
+                    SeatId = 6
+                },
+                new Passenger()
+                {
+                    Name = "Christian",
+                    Surname = "Baboka",
+                    Age = 27,
+                    Title = "Mr.",
+                    PassportNumber = "ETh01584w5",
+                    Citizenship = "Ethiopian",
+                    BookingId = 1,
+                    SeatId = 7
+                },
+                new Passenger()
+                {
+                    Name = "Elise",
+                    Surname = "Tchambila",
+                    Age = 23,
+                    Title = "Miss",
+                    PassportNumber = "OA2196375",
+                    Citizenship = "South African",
+                    BookingId = 2,
+                    SeatId = 8
+                },
+                new Passenger()
+                {
+                    Name = "Esther",
+                    Surname = "Leya",
+                    Age = 29,
+                    Title = "Mrs.",
+                    PassportNumber = "DA119ZA75",
+                    Citizenship = "Israeli",
+                    BookingId = 2,
+                    SeatId = 9
+                },
+                new Passenger()
+                {
+                    Name = "Davy",
+                    Surname = "Thom",
+                    Age = 27,
+                    Title = "Mr.",
+                    PassportNumber = "ZA2158895",
+                    Citizenship = "South African",
+                    BookingId = 1,
+                    SeatId = 10
+                },
+                new Passenger()
+                {
+                    Name = "Sara",
+                    Surname = "Marin",
+                    Age = 18,
+                    Title = "Miss",
+                    PassportNumber = "FR2996345",
+                    Citizenship = "French",
+                    BookingId = 3,
+                    SeatId = 11
+                },
+                new Passenger()
+                {
+                    Name = "Veroniqua",
+                    Surname = "Loembet",
+                    Age = 25,
+                    Title = "Mrs.",
+                    PassportNumber = "AO139FA75",
+                    Citizenship = "Congolese",
+                    BookingId = 3,
+                    SeatId = 12 
+                },
+                new Passenger()
+                {
+                    Name = "Owin",
+                    Surname = "Ntumba",
+                    Age = 20,
+                    Title = "Mrs.",
+                    PassportNumber = "OA01Ms12",
+                    Citizenship = "Congolese",
+                    BookingId = 1,
+                    SeatId = 13
+                },
+                new Passenger()
+                {
+                    Name = "Emmanuella",
+                    Surname = "Namib",
+                    Age = 18,
+                    Title = "Miss",
+                    PassportNumber = "Nam2196375",
+                    Citizenship = "Namibian",
+                    BookingId = 2,
+                    SeatId = 14
+                },
+                new Passenger()
+                {
+                    Name = "Steven",
+                    Surname = "Kajuki",
+                    Age = 22,
+                    Title = "Mr.",
+                    PassportNumber = "Rw119ZA75",
+                    Citizenship = "Rwadan",
+                    BookingId = 2,
+                    SeatId = 15
+                },
+                new Passenger()
+                {
+                    Name = "Isabella",
+                    Surname = "Dos Santos",
+                    Age = 32,
+                    Title = "Mrs.",
+                    PassportNumber = "ANG21AF8375",
+                    Citizenship = "Angolese",
+                    BookingId = 3,
+                    SeatId = 16
+                },
+                new Passenger()
+                {
+                    Name = "Carine",
+                    Surname = "Ouatara",
+                    Age = 18,
+                    Title = "Miss",
+                    PassportNumber = "IVC2996345",
+                    Citizenship = "Ivorian",
+                    BookingId = 3,
+                    SeatId = 17
+                },
+                new Passenger()
+                {
+                    Name = "Mel",
+                    Surname = "Melis",
+                    Age = 25,
+                    Title = "Mrs.",
+                    PassportNumber = "Fin139FA75",
+                    Citizenship = "Finish",
+                    BookingId = 3,
+                    SeatId = 18
+                },
+                new Passenger()
+                {
+                    Name = "Rena",
+                    Surname = "Pen",
+                    Age = 23,
+                    Title = "Miss",
+                    PassportNumber = "ENG2996345",
+                    Citizenship = "English",
+                    BookingId = 3,
+                    SeatId = 19
+                },
+                new Passenger()
+                {
+                    Name = "Karim",
+                    Surname = "Lee",
+                    Age = 38,
+                    Title = "Mrs.",
+                    PassportNumber = "US139FA78",
+                    Citizenship = "American",
+                    BookingId = 3,
+                    SeatId = 20 
                 }
             };
         }
+
+        private static IEnumerable<Booking> BookingList()
+        {
+            return new List<Booking>()
+            {
+                new Booking()
+                {
+                    Cost = new decimal(2500),
+                    Status = "Confirmed",
+                    CustomerId = 1
+                },
+                new Booking()
+                {
+                    Cost = new decimal(7500),
+                    Status = "Not Confirmed",
+                    CustomerId = 2
+                },
+                new Booking()
+                {
+                    Cost = new decimal(9500),
+                    Status = "Not Confirmed",
+                    CustomerId = 3
+                }
+            };
+        }
+
+        private static IEnumerable<Seat> SeatsList()
+        {
+            return new List<Seat>()
+            {
+                new Seat()
+                {
+                    SeatNum = "1A",
+                    Cabin = "Bus",
+                    FlightId = 1,
+                },
+                new Seat()
+                {
+                    SeatNum = "2A",
+                    Cabin = "Bus",
+                    FlightId = 1,
+                },
+                new Seat()
+                {
+                    SeatNum = "3A",
+                    Cabin = "Bus",
+                    FlightId = 1,
+                },
+                new Seat()
+                {
+                    SeatNum = "4B",
+                    Cabin = "Bus",
+                    FlightId = 1,
+                },
+                new Seat()
+                {
+                    SeatNum = "5B",
+                    Cabin = "Bus",
+                    FlightId = 1,
+                },
+                new Seat()
+                {
+                    SeatNum = "10A",
+                    Cabin = "Eco",
+                    FlightId = 1,
+                },
+                new Seat()
+                {
+                    SeatNum = "21C",
+                    Cabin = "Eco",
+                    FlightId = 1,
+                },
+                new Seat()
+                {
+                    SeatNum = "21D",
+                    Cabin = "Eco",
+                    FlightId = 1,
+                },
+                new Seat()
+                {
+                    SeatNum = "11B",
+                    Cabin = "Eco",
+                    FlightId = 1,
+                },
+                new Seat()
+                {
+                    SeatNum = "25B",
+                    Cabin = "Eco",
+                    FlightId = 1,
+                },
+                new Seat()
+                {
+                    SeatNum = "1A",
+                    Cabin = "Bus",
+                    FlightId = 3,
+                },
+                new Seat()
+                {
+                    SeatNum = "2A",
+                    Cabin = "Bus",
+                    FlightId = 3,
+                },
+                new Seat()
+                {
+                    SeatNum = "3A",
+                    Cabin = "Bus",
+                    FlightId = 2,
+                },
+                new Seat()
+                {
+                    SeatNum = "4B",
+                    Cabin = "Bus",
+                    FlightId = 3,
+                },
+                new Seat()
+                {
+                    SeatNum = "5B",
+                    Cabin = "Bus",
+                    FlightId = 2,
+                },
+                new Seat()
+                {
+                    SeatNum = "10A",
+                    Cabin = "Eco",
+                    FlightId = 3,
+                },
+                new Seat()
+                {
+                    SeatNum = "21C",
+                    Cabin = "Eco",
+                    FlightId = 2,
+                },
+                new Seat()
+                {
+                    SeatNum = "21D",
+                    Cabin = "Eco",
+                    FlightId = 2,
+                },
+                new Seat()
+                {
+                    SeatNum = "11B",
+                    Cabin = "Eco",
+                    FlightId = 3,
+                },
+                new Seat()
+                {
+                    SeatNum = "25B",
+                    Cabin = "Eco",
+                    FlightId = 2,
+                }
+            };
+        }
+
+        private static IEnumerable<Customer> CustomerList()
+        {
+            return new List<Customer>()
+            {
+                new Customer()
+                {
+                    Name = "Chris",
+                    Email = "christ.eaglestack.com",
+                    Address = "29 Hadley St Brackenfell, Cape Town"
+                },
+                new Customer()
+                {
+                    Name = "Martin",
+                    Email = "martin.eaglestack.com",
+                    Address = "12 Kempstone St Sandton, Johannesburg"
+                },
+                new Customer()
+                {
+                    Name = "Olivier",
+                    Email = "olivier.gmail.com",
+                    Address = "15 Briardene St Tygerberg, Cape Town"
+                },
+            };
+        }
     }
-    
 }

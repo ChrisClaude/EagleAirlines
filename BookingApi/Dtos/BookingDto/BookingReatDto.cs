@@ -22,9 +22,11 @@ namespace BookingApi.Dtos.BookingDto
         public decimal Cost { get; set; }
         public string Status { get; set; }
         public int PassengerId { get; set; }
+        public int CustomerId { get; set; }
+
 
         public IEnumerable<PassengerReadDto> Passengers { get; set; }
-        public IEnumerable<SeatReadDto> Seat { get; set; }
+        public IEnumerable<Customer> Customer { get; set; }
 
     }
 }

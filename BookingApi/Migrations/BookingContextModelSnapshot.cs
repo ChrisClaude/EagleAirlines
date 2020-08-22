@@ -93,25 +93,24 @@ namespace BookingApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Airport");
+                    b.ToTable("Airports");
                 });
 
             modelBuilder.Entity("BookingApi.Models.Booking", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<decimal>("Cost")
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("FlightId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PassengerId")
+                    b.Property<int>("CustomerId")
                         .HasColumnType("int");
 
                     b.Property<string>("Status")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("TimeStamp")
@@ -119,11 +118,35 @@ namespace BookingApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FlightId");
+                    b.HasIndex("CustomerId");
 
-                    b.HasIndex("PassengerId");
+                    b.ToTable("Bookings");
+                });
 
-                    b.ToTable("Booking");
+            modelBuilder.Entity("BookingApi.Models.Customer", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(400)")
+                        .HasMaxLength(400);
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(100)")
+                        .HasMaxLength(100);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Customers");
                 });
 
             modelBuilder.Entity("BookingApi.Models.Departure", b =>
@@ -149,7 +172,7 @@ namespace BookingApi.Migrations
                     b.HasIndex("FlightId")
                         .IsUnique();
 
-                    b.ToTable("Departure");
+                    b.ToTable("Departures");
                 });
 
             modelBuilder.Entity("BookingApi.Models.Destination", b =>
@@ -175,7 +198,7 @@ namespace BookingApi.Migrations
                     b.HasIndex("FlightId")
                         .IsUnique();
 
-                    b.ToTable("Destination");
+                    b.ToTable("Destinations");
                 });
 
             modelBuilder.Entity("BookingApi.Models.Flight", b =>
@@ -193,7 +216,7 @@ namespace BookingApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Flight");
+                    b.ToTable("Flights");
                 });
 
             modelBuilder.Entity("BookingApi.Models.Passenger", b =>
@@ -203,15 +226,13 @@ namespace BookingApi.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int>("Age")
+                        .HasColumnType("int");
+
+                    b.Property<int>("BookingId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Citizenship")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(70)")
-                        .HasMaxLength(70);
-
-                    b.Property<DateTime>("DateOfBirth")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(70)")
                         .HasMaxLength(70);
@@ -226,6 +247,9 @@ namespace BookingApi.Migrations
                         .HasColumnType("nvarchar(70)")
                         .HasMaxLength(70);
 
+                    b.Property<int>("SeatId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Surname")
                         .IsRequired()
                         .HasColumnType("nvarchar(70)")
@@ -238,7 +262,12 @@ namespace BookingApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Passenger");
+                    b.HasIndex("BookingId");
+
+                    b.HasIndex("SeatId")
+                        .IsUnique();
+
+                    b.ToTable("Passengers");
                 });
 
             modelBuilder.Entity("BookingApi.Models.Seat", b =>
@@ -265,20 +294,14 @@ namespace BookingApi.Migrations
                     b.HasIndex("SeatNum", "FlightId")
                         .IsUnique();
 
-                    b.ToTable("Seat");
+                    b.ToTable("Seats");
                 });
 
             modelBuilder.Entity("BookingApi.Models.Booking", b =>
                 {
-                    b.HasOne("BookingApi.Models.Flight", "Flight")
-                        .WithMany()
-                        .HasForeignKey("FlightId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BookingApi.Models.Passenger", "Passenger")
-                        .WithMany()
-                        .HasForeignKey("PassengerId")
+                    b.HasOne("BookingApi.Models.Customer", "Customer")
+                        .WithMany("Bookings")
+                        .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -309,6 +332,21 @@ namespace BookingApi.Migrations
                     b.HasOne("BookingApi.Models.Flight", "Flight")
                         .WithOne("Destination")
                         .HasForeignKey("BookingApi.Models.Destination", "FlightId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("BookingApi.Models.Passenger", b =>
+                {
+                    b.HasOne("BookingApi.Models.Booking", "Booking")
+                        .WithMany("Passengers")
+                        .HasForeignKey("BookingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BookingApi.Models.Seat", "Seat")
+                        .WithOne("Passenger")
+                        .HasForeignKey("BookingApi.Models.Passenger", "SeatId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
