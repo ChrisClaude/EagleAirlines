@@ -25,7 +25,8 @@ namespace BookingApi.Data.Repository.SeatRepo
             if (!string.IsNullOrEmpty(queryStringParameters.SearchString))
             {
                 var search = queryStringParameters.SearchString;
-                seatsIq = _context.Seats.Where(s => s.SeatNum.ToUpper().Contains(search.ToUpper()));
+                seatsIq = _context.Seats
+                    .Where(s => s.SeatNum.ToUpper().Contains(search.ToUpper()));
             }
             else
             {

@@ -25,7 +25,9 @@ namespace BookingApi.Data.Repository.DestinationRepo
             if (!string.IsNullOrEmpty(queryStringParameters.SearchString))
             {
                 var searchDate = DateTime.Parse(queryStringParameters.SearchString);
-                destinationsIq = _context.Destinations.Where(d => d.Date.Equals(searchDate));
+                destinationsIq = _context.Destinations
+                    .Where(d => d.Date.Equals(searchDate))
+                    .Include(des => des.Airport);
             }
             else
             {

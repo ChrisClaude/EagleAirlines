@@ -25,12 +25,16 @@ namespace BookingApi.Data.Repository.DepartureRepo
             if (!string.IsNullOrEmpty(queryStringParameters.SearchString))
             {
                 var searchDate = DateTime.Parse(queryStringParameters.SearchString);
-                departuresIq = _context.Departures.Where(d => d.Date.Equals(searchDate));
+                departuresIq = _context.Departures
+                    .Where(d => d.Date.Equals(searchDate))
+                    .Include(dep => dep.Airport)
+                    .AsNoTracking();
             }
             else
             {
                 departuresIq = from d in _context.Departures
                         .Include(dep => dep.Airport)
+                        .AsNoTracking()
                     select d;
             }
 

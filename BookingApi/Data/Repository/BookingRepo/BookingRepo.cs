@@ -26,7 +26,12 @@ namespace BookingApi.Data.Repository.BookingRepo
             {
                 var search = queryStringParameters.SearchString;
                 // search by date
-                bookingsIq = _context.Bookings.Where(b => b.TimeStamp == DateTime.Parse(search));
+                bookingsIq = _context.Bookings
+                    .Where(b => b.TimeStamp == DateTime.Parse(search))
+                    .Include(booking => booking.Passengers)
+                    .ThenInclude(passenger => passenger.Seat)
+                    .ThenInclude(seat => seat.Flight)
+                    .AsNoTracking();
             }
             else
             {
@@ -84,19 +89,19 @@ namespace BookingApi.Data.Repository.BookingRepo
             await _context.Bookings.AddAsync(booking);
         }
 
-        public void Update(Booking flight)
+        public void Update(Booking booking)
         {
-            _context.Entry(flight).State = EntityState.Modified;
+            _context.Entry(booking).State = EntityState.Modified;
         }
 
-        public void Delete(Booking flight)
+        public void Delete(Booking booking)
         {
-            if (flight == null)
+            if (booking == null)
             {
-                throw new ArgumentNullException(nameof(flight));
+                throw new ArgumentNullException(nameof(booking));
             }
 
-            _context.Bookings.Remove(flight);
+            _context.Bookings.Remove(booking);
         }
 
         public async Task<bool> SaveChangesAsync()

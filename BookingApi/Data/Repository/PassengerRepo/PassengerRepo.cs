@@ -34,7 +34,10 @@ namespace BookingApi.Data.Repository.PassengerRepo
             }
             else
             {
-                passengersIq = from b in _context.Passengers.AsNoTracking() select b;
+                passengersIq = from b in _context.Passengers
+                    .Include(passenger => passenger.Booking)
+                    .ThenInclude(booking => booking.Customer)
+                    .AsNoTracking() select b;
             }
 
             // page

@@ -25,8 +25,13 @@ namespace BookingApi.Data.Repository.FlightRepo
             if (!string.IsNullOrEmpty(queryStringParameters.SearchString))
             {
                 var search = queryStringParameters.SearchString;
-                flightsIq = _context.Flights.Where(f => f.Name.ToUpper().Contains(search.ToUpper())
-                                                        || f.Description.ToUpper().Contains(search.ToUpper()));
+                flightsIq = _context.Flights
+                    .Where(f => f.Name.ToUpper().Contains(search.ToUpper()) || f.Description.ToUpper().Contains(search.ToUpper()))
+                    .Include(f => f.Departure)
+                    .ThenInclude(departure => departure.Airport)
+                    .Include(f => f.Destination)
+                    .ThenInclude(destination => destination.Airport)
+                    .AsNoTracking();
             }
             else
             {
