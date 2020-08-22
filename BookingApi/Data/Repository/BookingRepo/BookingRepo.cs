@@ -30,7 +30,7 @@ namespace BookingApi.Data.Repository.BookingRepo
                     .Where(b => b.TimeStamp == DateTime.Parse(search))
                     .Include(booking => booking.Passengers)
                     .ThenInclude(passenger => passenger.Seat)
-                    .ThenInclude(seat => seat.Flight)
+                    .Include(b => b.Customer)
                     .AsNoTracking();
             }
             else
@@ -38,7 +38,7 @@ namespace BookingApi.Data.Repository.BookingRepo
                 bookingsIq = from b in _context.Bookings
                     .Include(booking => booking.Passengers)
                     .ThenInclude(passenger => passenger.Seat)
-                    .ThenInclude(seat => seat.Flight)
+                    .Include(b => b.Customer)
                     .AsNoTracking()
                     select b;
             }
@@ -75,7 +75,7 @@ namespace BookingApi.Data.Repository.BookingRepo
             return await _context.Bookings
                 .Include(booking => booking.Passengers)
                 .ThenInclude(passenger => passenger.Seat)
-                .ThenInclude(seat => seat.Flight)
+                .Include(b => b.Customer)
                 .SingleOrDefaultAsync(b => b.Id == id);
         }
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using BookingApi.Dtos.AirportDto;
+using BookingApi.Dtos.BookingDto;
 using BookingApi.Models;
 
 namespace BookingApi.Dtos.CustomerDto
@@ -16,7 +17,7 @@ namespace BookingApi.Dtos.CustomerDto
         
         public string Address { get; set; }
 
-        public IEnumerable<Booking> Bookings { get; set; }
+        public IEnumerable<CustomerBookingReadDto> Bookings { get; set; }
 
     }
 }
