@@ -4,84 +4,88 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace BookingApi.Data
 {
     public static class DbInitializer
     {
-        public static void Initialize(BookingContext context)
+        public static async Task Initialize(BookingContext context)
         {
             // Initialize airports
-            InitializeAirports(context);
+            await InitializeAirports(context);
 
             // Initialize flights
-            InitializeFlights(context);
+            await InitializeFlights(context);
 
             // Initialize departures
-            InitializeDepartures(context);
+            await InitializeDepartures(context);
 
             // Initialize destinations
-            InitializeDestinations(context);
+            await InitializeDestinations(context);
 
             // Initialize customers
-            InitializeCustomers(context);
+            await InitializeCustomers(context);
             
             // Initialize bookings
-            InitializeBookings(context);
+            await InitializeBookings(context);
             
             // Initialize seats
-            InitializeSeats(context);
+            await InitializeSeats(context);
 
             // Initialize passengers
-            InitializePassengers(context);
+            await InitializePassengers(context);
         }
 
-        private static void InitializeCustomers(BookingContext context)
+        private static async Task InitializeCustomers(BookingContext context)
         {
-            if (context.Customers.Any()) return;
+            if (context.Customers.Any()) 
+            {
+                return;
+            }
 
             var customers = CustomerList();
-            context.Customers.AddRange(customers);
-            context.SaveChanges();
+            await context.Customers.AddRangeAsync(customers);
+            await context.SaveChangesAsync();
 
             Console.WriteLine("Customers data seeded");
         }
 
-        private static void InitializeBookings(BookingContext context)
+        private static async Task InitializeBookings(BookingContext context)
         {
             if (context.Bookings.Any()) return;
 
             var bookings = BookingList();
-            context.Bookings.AddRange(bookings);
-            context.SaveChanges();
+            await context.Bookings.AddRangeAsync(bookings);
+            await context.SaveChangesAsync();
 
             Console.WriteLine("Bookings data seeded");
         }
 
-        private static void InitializePassengers(BookingContext context)
+        private static async Task InitializePassengers(BookingContext context)
         {
             if (context.Passengers.Any()) return;
 
             var passengers = PassengerList();
-            context.Passengers.AddRange(passengers);
-            context.SaveChanges();
+            await context.Passengers.AddRangeAsync(passengers);
+            await context.SaveChangesAsync();
 
             Console.WriteLine("Passengers data seeded");
         }
 
-        private static void InitializeSeats(BookingContext context)
+        private static async Task InitializeSeats(BookingContext context)
         {
             if (context.Seats.Any()) return;
 
             var seats = SeatsList();
 
-            context.Seats.AddRange(seats);
-            context.SaveChanges();
+            await context.Seats.AddRangeAsync(seats);
+            await context.SaveChangesAsync();
 
             Console.WriteLine("Seats data seeded");
         }
 
-        private static void InitializeDestinations(BookingContext context)
+        private static async Task InitializeDestinations(BookingContext context)
         {
             if (context.Destinations.Any()) return;
 
@@ -107,13 +111,13 @@ namespace BookingApi.Data
                 },
             };
 
-            context.Destinations.AddRange(destinations);
-            context.SaveChanges();
+            await context.Destinations.AddRangeAsync(destinations);
+            await context.SaveChangesAsync();
 
             Console.WriteLine("Destinations data seeded");
         }
 
-        private static void InitializeDepartures(BookingContext context)
+        private static async Task InitializeDepartures(BookingContext context)
         {
             if (context.Departures.Any()) return;
 
@@ -139,13 +143,13 @@ namespace BookingApi.Data
                 }
             };
 
-            context.Departures.AddRange(departures);
-            context.SaveChanges();
+            await context.Departures.AddRangeAsync(departures);
+            await context.SaveChangesAsync();
 
             Console.WriteLine("Departures data seeded");
         }
 
-        private static void InitializeFlights(BookingContext context)
+        private static async Task InitializeFlights(BookingContext context)
         {
             if (context.Flights.Any()) return;
 
@@ -168,20 +172,20 @@ namespace BookingApi.Data
                 }
             };
 
-            context.Flights.AddRange(flights);
-            context.SaveChanges();
+            await context.Flights.AddRangeAsync(flights);
+            await context.SaveChangesAsync();
 
             Console.WriteLine("Flights data seeded");
         }
 
-        private static void InitializeAirports(BookingContext context)
+        private static async Task InitializeAirports(BookingContext context)
         {
             if (context.Airports.Any())
                 return;
 
             var airports = ReadAirportJsonFile();
-            context.Airports.AddRange(airports);
-            context.SaveChanges();
+            await context.Airports.AddRangeAsync(airports);
+            await context.SaveChangesAsync();
 
             Console.WriteLine("Airports data seeded");
         }

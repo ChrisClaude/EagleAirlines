@@ -30,7 +30,7 @@ namespace BookingApi
                 try 
                 {
                     var context = services.GetRequiredService<BookingContext>();
-                    DbInitializer.Initialize(context);
+                    DbInitializer.Initialize(context).Wait();
                 } 
                 catch (Exception ex) 
                 {
