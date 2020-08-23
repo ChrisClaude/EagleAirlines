@@ -47,6 +47,8 @@ namespace BookingApi
                             .WithExposedHeaders("x-pagination");
                     });
             });
+
+            services.AddRouting(options => options.LowercaseUrls = true);
             
             services.AddControllers()
                 .AddNewtonsoftJson();
