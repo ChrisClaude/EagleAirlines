@@ -1,0 +1,32 @@
+﻿
+Database Server Credentials
+
+Username: CChris
+Password: Cla@5027jesuschrist
+
+Database Connection Credentials
+
+Username: CChris_db
+Password: Cla@5027jesuschrist_db
+
+
+Updates
+========================================================================
+1. 
+
+The BookingId should reflect a reservation code such BXJHFT
+
+2.
+Tests the Seats controller
+
+3. Merge server side and client side pagination
+
+Issues
+=========================================================================
+1. 
+
+
+
+{"ItemCount":7698,"PageSize":50,"PageIndex":1,"TotalPages":154,"HasNextPage":true,"HasPreviousPage":false}
+
+

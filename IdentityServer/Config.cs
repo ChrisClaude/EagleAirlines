@@ -9,41 +9,37 @@ namespace IdentityServer
 {
     public static class Config
     {
-
-        public static IEnumerable<IdentityResource> Ids =>
+        public static IEnumerable<IdentityResource> IdentityResources =>
             new IdentityResource[]
             {
                 new IdentityResources.OpenId()
             };
 
-        public static IEnumerable<ApiResource> Apis =>
-            new ApiResource[]
+        public static IEnumerable<ApiScope> ApiScopes =>
+            new ApiScope[]
             {
-                new ApiResource("BookingAPI", "Eagle Airlines Booking API")
+                new ApiScope("BookingAPI", "BooKing API")
             };
-
-
 
         public static IEnumerable<Client> Clients =>
             new Client[]
             {
-                new Client
-                {
-                    ClientId = "client",
+                 new Client
+                    {
+                        ClientId = "client",
 
-                    // no interactive user, use the clientid/secret for authentication
-                    AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
+                        // no interactive user, use the clientid/secret for authentication
+                        AllowedGrantTypes = GrantTypes.ClientCredentials,
 
-                    // secret for authentication
-                    ClientSecrets = 
-                    { 
-                        new Secret("secret".Sha256())
-                    },
+                        // secret for authentication
+                        ClientSecrets =
+                        {
+                            new Secret("secret".Sha256())
+                        },
 
-                    // scopes that client has access to
-                    AllowedScopes = { "BookingAPI" }
-                }
+                        // scopes that client has access to
+                        AllowedScopes = { "BookingAPI" }
+                    }
             };
-
     }
 }
