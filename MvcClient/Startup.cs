@@ -39,6 +39,9 @@ namespace MvcClient
                 options.ResponseType = "code";
 
                 options.SaveTokens = true;
+
+                options.Scope.Add("BookingAPI");
+                //options.Scope.Add("offline_access");
             });
         }
 

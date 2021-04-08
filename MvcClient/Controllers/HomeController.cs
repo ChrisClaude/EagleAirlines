@@ -2,10 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using MvcClient.Models;
+using Newtonsoft.Json.Linq;
 
 namespace MvcClient.Controllers
 {
@@ -18,9 +22,25 @@ namespace MvcClient.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> IndexAsync()
         {
+            var accessToken = await HttpContext.GetTokenAsync("access_token");
+
+            Console.WriteLine(accessToken);
+
             return View();
+        }
+
+        public async Task<IActionResult> CallApi()
+        {
+            var accessToken = await HttpContext.GetTokenAsync("access_token");
+
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+            var content = await client.GetStringAsync("https://localhost:44330/identity");
+
+            ViewBag.Json = JArray.Parse(content).ToString();
+            return View("Home/Json");
         }
 
         public IActionResult Privacy()
