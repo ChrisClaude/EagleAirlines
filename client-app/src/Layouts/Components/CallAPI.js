@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { UserManager } from "oidc-client";
+import axios from "axios";
 
 function CallAPI() {
-    const [results, setResults] = useState("");
+    const [results] = useState("");
+    const [passengers] = useState([]);
 
     const config = {
         authority: "https://localhost:5001",
@@ -12,6 +14,13 @@ function CallAPI() {
         scope: "openid profile BookingAPI",
         post_logout_redirect_uri: "http://localhost:3000/"
     };
+
+    useEffect(() => {
+        axios
+            .get("https://localhost:6001/api/passengers")
+            .then(res => console.log(res.data))
+            .catch(error => console.error(error));
+    }, [passengers]);
 
     const mgr = new UserManager(config);
 
@@ -31,7 +40,7 @@ function CallAPI() {
     const api = () => {
         console.log("api");
         mgr.getUser().then(function(user) {
-            let url = "https://localhost:6001/identity";
+            let url = "https://localhost:6001/api/passengers";
 
             let xhr = new XMLHttpRequest();
             xhr.open("GET", url);

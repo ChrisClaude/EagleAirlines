@@ -40,20 +40,22 @@ namespace BookingApi
         {
             services.AddCors(options =>
             {
-                //options.AddPolicy(name: MyAllowSpecificOrigins,
-                //    builder =>
-                //    {
-                //        builder.WithOrigins("http://localhost:3000", "https://eagleairlines.netlify.app")
-                //            .WithExposedHeaders("x-pagination");
-                //    });
+                options.AddPolicy(name: MyAllowSpecificOrigins,
+                   builder =>
+                   {
+                       builder.WithOrigins("http://localhost:3000", "https://eagleairlines.netlify.app")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .WithExposedHeaders("x-pagination");
+                   });
 
                 // this defines a CORS policy called "default"
-                options.AddPolicy("default", policy =>
-                {
-                    policy.WithOrigins("https://localhost:5003")
-                        .AllowAnyHeader()
-                        .AllowAnyMethod();
-                });
+                // options.AddPolicy("default", policy =>
+                // {
+                //     policy.WithOrigins("https://localhost:5003")
+                //         .AllowAnyHeader()
+                //         .AllowAnyMethod();
+                // });
             });
 
             services.AddRouting(options => options.LowercaseUrls = true);
@@ -84,7 +86,8 @@ namespace BookingApi
             services.AddDbContext<BookingContext>(opt =>
                 opt.UseSqlServer(Configuration.GetConnectionString("BookingApiConnection")));
 
-            services.AddControllers().AddNewtonsoftJson(s => {
+            services.AddControllers().AddNewtonsoftJson(s =>
+            {
                 s.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
             });
 
@@ -148,9 +151,9 @@ namespace BookingApi
 
             app.UseRouting();
 
-            //app.UseCors(MyAllowSpecificOrigins);
+            app.UseCors(MyAllowSpecificOrigins);
 
-            app.UseCors("default");
+            // app.UseCors("default");
 
             app.UseAuthentication();
 
