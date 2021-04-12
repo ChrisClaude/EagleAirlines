@@ -1,4 +1,4 @@
-﻿using IdentityModel.Client;
+using IdentityModel.Client;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Net.Http;
@@ -43,7 +43,7 @@ namespace ConsoleClient
             var apiClient = new HttpClient();
             apiClient.SetBearerToken(tokenResponse.AccessToken);
 
-            var response = await apiClient.GetAsync("https://localhost:44330/identity");
+            var response = await apiClient.GetAsync("https://localhost:6001/api/airports");
 
 
             if (!response.IsSuccessStatusCode)

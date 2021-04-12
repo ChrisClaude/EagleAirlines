@@ -40,12 +40,20 @@ namespace BookingApi
         {
             services.AddCors(options =>
             {
-                options.AddPolicy(name: MyAllowSpecificOrigins,
-                    builder =>
-                    {
-                        builder.WithOrigins("http://localhost:3000", "https://eagleairlines.netlify.app")
-                            .WithExposedHeaders("x-pagination");
-                    });
+                //options.AddPolicy(name: MyAllowSpecificOrigins,
+                //    builder =>
+                //    {
+                //        builder.WithOrigins("http://localhost:3000", "https://eagleairlines.netlify.app")
+                //            .WithExposedHeaders("x-pagination");
+                //    });
+
+                // this defines a CORS policy called "default"
+                options.AddPolicy("default", policy =>
+                {
+                    policy.WithOrigins("https://localhost:5003")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
             });
 
             services.AddRouting(options => options.LowercaseUrls = true);
@@ -140,7 +148,9 @@ namespace BookingApi
 
             app.UseRouting();
 
-            app.UseCors(MyAllowSpecificOrigins);
+            //app.UseCors(MyAllowSpecificOrigins);
+
+            app.UseCors("default");
 
             app.UseAuthentication();
 

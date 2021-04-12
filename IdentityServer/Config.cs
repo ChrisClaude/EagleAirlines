@@ -64,7 +64,27 @@ namespace IdentityServer
                             IdentityServerConstants.StandardScopes.Profile,
                              "BookingAPI"
                         }
+                    },
+
+                // JavaScript Client
+                new Client
+                {
+                    ClientId = "js",
+                    ClientName = "JavaScript Client",
+                    AllowedGrantTypes = GrantTypes.Code,
+                    RequireClientSecret = false,
+
+                    RedirectUris =           { "http://localhost:3000/callback" },
+                    PostLogoutRedirectUris = { "http://localhost:3000/" },
+                    AllowedCorsOrigins =     { "http://localhost:3000" },
+
+                    AllowedScopes =
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        "BookingAPI"
                     }
+                }
             };
     }
 }
