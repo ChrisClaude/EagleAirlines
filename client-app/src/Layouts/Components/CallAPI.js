@@ -42,6 +42,16 @@ function CallAPI() {
         mgr.getUser().then(function(user) {
             let url = "https://localhost:6001/api/passengers";
 
+            axios({
+                method: "get",
+                url: "https://localhost:6001/api/destinations",
+                headers: {
+                    Authorization: "Bearer " + user.access_token
+                }
+            })
+                .then(res => console.log(res.data))
+                .catch(err => console.error(err));
+
             let xhr = new XMLHttpRequest();
             xhr.open("GET", url);
             xhr.onload = function() {
